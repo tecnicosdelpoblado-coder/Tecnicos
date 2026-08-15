@@ -5,10 +5,12 @@
 import io, os
 from flask import Flask, request, send_file
 from render_orden import render_orden
+from render_factura import render_factura
 
 app = Flask(__name__)
 
 CAMPOS = ["cliente", "direccion", "telefono", "fecha", "hora", "servicio"]
+CAMPOS_FACTURA = ["fecha", "cliente", "telefono", "direccion", "equipo", "tecnico", "servicio", "concepto", "valor", "total"]
 
 @app.get("/")
 def home():
@@ -19,6 +21,12 @@ def orden():
     d = {k: (request.args.get(k, "") or "").replace("|", "\n") for k in CAMPOS}
     png = render_orden(d)
     return send_file(io.BytesIO(png), mimetype="image/png", download_name="orden-servicio.png")
+
+@app.get("/factura")
+def factura():
+    d = {k: (request.args.get(k, "") or "").replace("|", "\n") for k in CAMPOS_FACTURA}
+    png = render_factura(d)
+    return send_file(io.BytesIO(png), mimetype="image/png", download_name="factura.png")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
