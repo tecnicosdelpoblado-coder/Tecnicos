@@ -10,9 +10,14 @@ FR = os.path.join(HERE, "fonts", "LiberationSans-Regular.ttf")
 BLACK = (12, 12, 12)
 NAVY = (11, 34, 90)
 
-_bg = Image.open(BG).convert("RGB")
-W, H = _bg.size
+_bg = None
 _cache = {}
+
+def _bg_img():
+    global _bg
+    if _bg is None:
+        _bg = Image.open(BG).convert("RGB")
+    return _bg
 
 def font(size, bold=True):
     k = (size, bold)
@@ -59,7 +64,7 @@ def money(v):
         return s
 
 def render_factura(d):
-    base = _bg.copy()
+    base = _bg_img().copy()
     dr = ImageDraw.Draw(base)
     val(dr, d.get("fecha", ""), (1035, 140), 150, 24, False, BLACK, anchor="rs")
 
