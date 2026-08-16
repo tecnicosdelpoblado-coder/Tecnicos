@@ -34,7 +34,7 @@ def fit(draw, text, max_width, start, bold=True):
     return 14
 
 def val(draw, text, at, max_width, start, bold=False, color=BLACK, anchor="ls"):
-    text = str(text or "")
+    text = str(text or "").replace("\n", " ").strip()
     s = fit(draw, text, max_width, start, bold)
     draw.text((at[0], at[1]), text, font=font(s, bold), fill=color, anchor=anchor)
 
@@ -93,7 +93,10 @@ def render_factura(d):
 
     tot = money(d.get("total"))
     valor = money(d.get("valor") or d.get("total"))
-    val(dr, d.get("concepto", ""), (68, 1012), 640, 26, False, BLACK)
+    cy = 1012
+    for ln in wrap(d.get("concepto", ""), 640, 25, dr, False, 5):
+        val(dr, ln, (68, cy), 640, 25, False, BLACK)
+        cy += 32
     val(dr, valor, (1000, 1012), 220, 27, True, BLACK, anchor="rs")
     val(dr, tot, (1000, 1218), 230, 32, True, NAVY, anchor="rs")
 
