@@ -18,6 +18,8 @@ CAMPOS_FACTURA = [
 WHATSAPP_TOKEN = os.environ.get("WHATSAPP_TOKEN", "")
 WHATSAPP_PHONE_ID = os.environ.get("WHATSAPP_PHONE_ID", "")
 WHATSAPP_API_VERSION = "v21.0"
+WHATSAPP_TEMPLATE_NAME = "factura_servicio"
+WHATSAPP_TEMPLATE_LANG = "es_CO"
 
 @app.get("/")
 def home():
@@ -70,11 +72,18 @@ def enviar_factura():
     Parametros por query string:
       - to: numero del cliente, solo digitos con codigo de pais (ej: 573001234567)
       - imagen_url: URL publica de la imagen a enviar (ej: la URL de /factura)
+      - nombre: nombre del cliente (opcional, solo se usa si plantilla=1)
+      - plantilla: si es "1", envia usando la plantilla aprobada 'factura_servicio'
+        (funciona siempre, sin depender de la ventana de 24h). Si no se manda,
+        se envia como imagen suelta (solo funciona si hay conversacion abierta).
     Siempre responde 200 con una imagen-comprobante (verde=ok, rojo=error) para
     que Airtable pueda adjuntarla automaticamente via 'attachment by URL'.
     """
     to = (request.args.get("to", "") or "").strip()
     imagen_url = (request.args.get("imagen_url", "") or "").strip()
+    nombre = (request.args.get("nombre", "") or "Cliente").strip()
+    usar_plantilla = (request.args.get("plantilla", "") or "") == "1"
+    plantilla_nombre = (request.args.get("plantilla_nombre", "") or WHATSAPP_TEMPLATE_NAME).strip()
 
     if not to or not imagen_url:
         png = _comprobante_png(False, "Faltan parametros 'to' o 'imagen_url'")
@@ -88,12 +97,34 @@ def enviar_factura():
         "Authorization": f"Bearer {WHATSAPP_TOKEN}",
         "Content-Type": "application/json",
     }
-    payload = {
-        "messaging_product": "whatsapp",
-        "to": to,
-        "type": "image",
-        "image": {"link": imagen_url},
-    }
+
+    if usar_plantilla:
+        payload = {
+            "messaging_product": "whatsapp",
+            "to": to,
+            "type": "template",
+            "template": {
+                "name": plantilla_nombre,
+                "language": {"code": WHATSAPP_TEMPLATE_LANG},
+                "components": [
+                    {
+                        "type": "header",
+                        "parameters": [{"type": "image", "image": {"link": imagen_url}}],
+                    },
+                    {
+                        "type": "body",
+                        "parameters": [{"type": "text", "text": nombre}],
+                    },
+                ],
+            },
+        }
+    else:
+        payload = {
+            "messaging_product": "whatsapp",
+            "to": to,
+            "type": "image",
+            "image": {"link": imagen_url},
+        }
 
     debug = request.args.get("debug", "") == "1"
 
