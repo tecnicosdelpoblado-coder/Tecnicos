@@ -95,14 +95,21 @@ def enviar_factura():
         "image": {"link": imagen_url},
     }
 
+    debug = request.args.get("debug", "") == "1"
+
     try:
         r = requests.post(url, headers=headers, json=payload, timeout=20)
         data = r.json()
     except Exception as e:
+        if debug:
+            return jsonify({"ok": False, "excepcion": str(e)}), 200
         png = _comprobante_png(False, f"Excepcion: {e}")
         return send_file(png, mimetype="image/png", download_name="comprobante-envio.png")
 
     ok = r.status_code == 200
+    if debug:
+        return jsonify({"ok": ok, "status": r.status_code, "to": to, "imagen_url": imagen_url, "respuesta": data}), 200
+
     if ok:
         detalle = f"Enviado a {to}"
     else:
