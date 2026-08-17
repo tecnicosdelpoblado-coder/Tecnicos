@@ -84,6 +84,11 @@ def enviar_factura():
     nombre = (request.args.get("nombre", "") or "Cliente").strip()
     usar_plantilla = (request.args.get("plantilla", "") or "") == "1"
     plantilla_nombre = (request.args.get("plantilla_nombre", "") or WHATSAPP_TEMPLATE_NAME).strip()
+    # La plantilla aprobada por Meta quedo sin la variable {{1}} en el cuerpo
+    # (texto fijo, 0 parametros). Por eso el body NO se manda a menos que se
+    # pida explicitamente con con_variable=1 (por si en el futuro se aprueba
+    # una version con variable).
+    con_variable = (request.args.get("con_variable", "") or "") == "1"
 
     if not to or not imagen_url:
         png = _comprobante_png(False, "Faltan parametros 'to' o 'imagen_url'")
@@ -99,6 +104,17 @@ def enviar_factura():
     }
 
     if usar_plantilla:
+        componentes = [
+            {
+                "type": "header",
+                "parameters": [{"type": "image", "image": {"link": imagen_url}}],
+            },
+        ]
+        if con_variable:
+            componentes.append({
+                "type": "body",
+                "parameters": [{"type": "text", "text": nombre}],
+            })
         payload = {
             "messaging_product": "whatsapp",
             "to": to,
@@ -106,16 +122,7 @@ def enviar_factura():
             "template": {
                 "name": plantilla_nombre,
                 "language": {"code": WHATSAPP_TEMPLATE_LANG},
-                "components": [
-                    {
-                        "type": "header",
-                        "parameters": [{"type": "image", "image": {"link": imagen_url}}],
-                    },
-                    {
-                        "type": "body",
-                        "parameters": [{"type": "text", "text": nombre}],
-                    },
-                ],
+                "components": componentes,
             },
         }
     else:
