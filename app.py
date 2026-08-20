@@ -21,6 +21,80 @@ WHATSAPP_API_VERSION = "v21.0"
 WHATSAPP_TEMPLATE_NAME = "factura_servicio"
 WHATSAPP_TEMPLATE_LANG = "es_CO"
 
+# Airtable (para recibir solicitudes desde la pagina web).
+AIRTABLE_TOKEN = os.environ.get("AIRTABLE_TOKEN", "")
+AIRTABLE_BASE_ID = "appo1SZqj8heuR6z0"
+AIRTABLE_TABLA_CLIENTES = "tblArYxaTHwB6MjZi"
+# IDs de los campos de la tabla Clientes.
+F_NOMBRE = "fldcQJCU3BxTM8qEd"
+F_WHATSAPP = "fldTjPFqz2WvlzL5D"
+F_BARRIO = "fldKJADhr3nBstWOW"
+F_DIRECCION = "fldLFDSNVPgdDvPoH"
+F_QUE_NECESITA = "fld1Oo2ySeODDnAj5"
+F_ELECTRODOMESTICO = "fldxqnIX7JfDeTAlY"
+
+ELECTRODOMESTICOS_VALIDOS = [
+    "Lavadora", "Nevera", "Calentador", "Aire acondicionado",
+    "Secadora", "Estufa", "Otro",
+]
+
+
+@app.after_request
+def _cors(resp):
+    """Permite que la pagina web (en otro dominio) llame a este servidor."""
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    resp.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return resp
+
+
+@app.route("/solicitud", methods=["POST", "OPTIONS"])
+def solicitud():
+    """
+    Recibe una solicitud de servicio desde la pagina web y crea el
+    registro en la tabla Clientes de Airtable.
+    Espera JSON con: nombre, telefono, electrodomestico, barrio, mensaje.
+    """
+    if request.method == "OPTIONS":
+        return ("", 204)
+
+    if not AIRTABLE_TOKEN:
+        return jsonify({"ok": False, "error": "Falta la variable AIRTABLE_TOKEN en Render"}), 500
+
+    d = request.get_json(silent=True) or {}
+    nombre = (d.get("nombre") or "").strip()
+    telefono = (d.get("telefono") or "").strip()
+    electro = (d.get("electrodomestico") or "").strip()
+    barrio = (d.get("barrio") or "").strip()
+    mensaje = (d.get("mensaje") or "").strip()
+
+    if not nombre or not telefono:
+        return jsonify({"ok": False, "error": "Nombre y telefono son obligatorios"}), 400
+
+    fields = {F_NOMBRE: nombre, F_WHATSAPP: telefono}
+    if barrio:
+        fields[F_BARRIO] = barrio
+    if mensaje:
+        fields[F_QUE_NECESITA] = mensaje
+    if electro in ELECTRODOMESTICOS_VALIDOS:
+        fields[F_ELECTRODOMESTICO] = electro
+
+    url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/{AIRTABLE_TABLA_CLIENTES}"
+    headers = {
+        "Authorization": f"Bearer {AIRTABLE_TOKEN}",
+        "Content-Type": "application/json",
+    }
+
+    try:
+        r = requests.post(url, headers=headers, json={"records": [{"fields": fields}]}, timeout=20)
+        data = r.json()
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 502
+
+    if r.status_code in (200, 201):
+        return jsonify({"ok": True}), 200
+    return jsonify({"ok": False, "error": data}), 502
+
 @app.get("/")
 def home():
     return "Render Orden de Servicio - Técnicos del Poblado: OK"
