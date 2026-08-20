@@ -32,6 +32,10 @@ F_BARRIO = "fldKJADhr3nBstWOW"
 F_DIRECCION = "fldLFDSNVPgdDvPoH"
 F_QUE_NECESITA = "fld1Oo2ySeODDnAj5"
 F_ELECTRODOMESTICO = "fldxqnIX7JfDeTAlY"
+F_ESTADO = "fldza3NE4gVdVlSIB"
+
+# Estado con el que entran las solicitudes que llegan desde la pagina web.
+ESTADO_WEB = "Por confirmar"
 
 ELECTRODOMESTICOS_VALIDOS = [
     "Lavadora", "Nevera", "Calentador", "Aire acondicionado",
@@ -71,7 +75,7 @@ def solicitud():
     if not nombre or not telefono:
         return jsonify({"ok": False, "error": "Nombre y telefono son obligatorios"}), 400
 
-    fields = {F_NOMBRE: nombre, F_WHATSAPP: telefono}
+    fields = {F_NOMBRE: nombre, F_WHATSAPP: telefono, F_ESTADO: ESTADO_WEB}
     if barrio:
         fields[F_BARRIO] = barrio
     if mensaje:
@@ -86,7 +90,8 @@ def solicitud():
     }
 
     try:
-        r = requests.post(url, headers=headers, json={"records": [{"fields": fields}]}, timeout=20)
+        cuerpo = {"records": [{"fields": fields}], "typecast": True}
+        r = requests.post(url, headers=headers, json=cuerpo, timeout=20)
         data = r.json()
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)}), 502
