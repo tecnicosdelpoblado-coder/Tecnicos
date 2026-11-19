@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Panel · Técnicos del Poblado</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0B225A">
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<style>
+:root{--navy:#0B225A;--navy-d:#071634;--blue:#1A6BFF;--soft:#E8F0FF;--wa:#25D366;--bg:#F4F7FC;--line:#E3E9F4;--muted:#5B6B85;--ink:#0E1626;--red:#D64545;--green:#17985A;--amber:#C98A0B;--r:14px;--ff:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--ff);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--blue);text-decoration:none}
+[hidden]{display:none!important}
+.top{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;padding:env(safe-area-inset-top) 0 0}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;max-width:1100px;margin:auto}
+.bar .b{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.02em}
+.bar img{height:30px}
+.bar .u{font-size:13px;opacity:.8;display:flex;gap:12px;align-items:center}
+.bar .u button{background:rgba(255,255,255,.12);border:0;color:#fff;padding:6px 12px;border-radius:999px;cursor:pointer}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;padding:0 12px 10px;max-width:1100px;margin:auto;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{flex:none;border:0;background:transparent;color:rgba(255,255,255,.75);padding:8px 14px;border-radius:999px;font-weight:700;cursor:pointer;white-space:nowrap}
+nav.tabs button.on{background:#fff;color:var(--navy)}
+nav.tabs .n{display:inline-block;min-width:18px;padding:0 5px;margin-left:6px;border-radius:9px;background:var(--red);color:#fff;font-size:11px;line-height:18px;text-align:center}
+main{max-width:1100px;margin:auto;padding:18px 14px 90px}
+h2{font-size:20px;color:var(--navy);margin-bottom:12px}
+h3{font-size:15px;color:var(--navy);margin-bottom:10px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sp{justify-content:space-between}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.box{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.kpi small{display:block;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.kpi b{font-size:22px;color:var(--navy)}
+.kpi.neg b{color:var(--red)}
+.list{display:grid;gap:8px}
+.item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.item:hover{border-color:#C9D6EE}
+.item .t{font-weight:700;color:var(--navy)}
+.item .s{color:var(--muted);font-size:13px}
+.item .r{text-align:right;white-space:nowrap}
+.empty{color:var(--muted);text-align:center;padding:24px;background:#fff;border:1px dashed var(--line);border-radius:12px}
+.badge{display:inline-block;font-size:11px;font-weight:800;padding:3px 8px;border-radius:999px;background:var(--soft);color:var(--navy);text-transform:uppercase;letter-spacing:.04em}
+.b-por_confirmar{background:#FFF4DB;color:#8A5A00}.b-agendado{background:var(--soft);color:var(--blue)}
+.b-en_proceso{background:#EDE7FF;color:#5B3CC4}.b-esperando_repuesto{background:#FFE9E0;color:#B5501F}
+.b-terminado{background:#E3F6EC;color:var(--green)}.b-cancelado{background:#EEE;color:#777}
+.b-garantia{background:#FDE7EF;color:#B02A5B}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;background:var(--navy);color:#fff;white-space:nowrap}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.sec{background:#fff;color:var(--navy);border:1.5px solid var(--line)}
+.btn.wa{background:var(--wa)}
+.btn.red{background:#fff;color:var(--red);border:1.5px solid #F2CACA}
+.btn.sm{padding:6px 10px;font-size:13px;border-radius:8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chips button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;color:var(--muted);cursor:pointer}
+.chips button.on{border-color:var(--navy);background:var(--navy);color:#fff}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--muted)}
+label.f input,label.f select,label.f textarea,input.s{border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;background:#fff;font-size:15px;font-weight:400;color:var(--ink);width:100%;outline:none}
+label.f textarea{min-height:70px;resize:vertical}
+label.f input:focus,label.f select:focus,label.f textarea:focus,input.s:focus{border-color:var(--blue)}
+.fg{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.chk{display:flex;gap:8px;align-items:center;font-weight:700;color:var(--navy);cursor:pointer}
+.chk input{width:20px;height:20px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+td.n,th.n{text-align:right;white-space:nowrap}
+.pos{color:var(--green)}.neg{color:var(--red)}
+.tot{display:grid;grid-template-columns:1fr auto;gap:4px 16px;font-size:14px}
+.tot b{text-align:right}
+.tot .big{font-size:18px;color:var(--navy)}
+.sep{height:1px;background:var(--line);margin:14px 0}
+.muted{color:var(--muted)}
+.small{font-size:12.5px}
+/* Modal */
+#modal2 .ov{z-index:60}
+.ov{position:fixed;inset:0;background:rgba(7,22,52,.45);z-index:50;display:flex;justify-content:center;align-items:flex-start;overflow:auto;padding:24px 12px}
+.md{background:var(--bg);border-radius:18px;width:min(760px,100%);box-shadow:0 30px 80px rgba(0,0,0,.25);margin-bottom:24px}
+.md .hd{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px;background:#fff;border-bottom:1px solid var(--line);border-radius:18px 18px 0 0}
+.md .hd h2{margin:0;font-size:18px}
+.md .x{border:0;background:var(--bg);width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;color:var(--navy)}
+.md .bd{padding:16px;display:grid;gap:12px}
+.md .ft{position:sticky;bottom:0;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;padding:12px 16px;background:#fff;border-top:1px solid var(--line);border-radius:0 0 18px 18px}
+@media (max-width:640px){
+  .ov{padding:0}
+  .md{border-radius:0;min-height:100%;margin:0}
+  .md .hd,.md .ft{border-radius:0}
+  .item{flex-wrap:wrap}
+  .ft .btn{flex:1 1 auto}
+}
+/* Login */
+.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(160deg,var(--navy-d),var(--navy))}
+.login form{background:#fff;border-radius:20px;padding:28px;width:min(380px,100%);display:grid;gap:14px;box-shadow:0 30px 80px rgba(0,0,0,.3)}
+.login img{height:70px;margin:0 auto 4px}
+.login h1{font-size:20px;text-align:center;color:var(--navy)}
+.login p{text-align:center;color:var(--muted);font-size:13.5px}
+.msg{font-size:13.5px;text-align:center}
+.msg.err{color:var(--red)}.msg.ok{color:var(--green)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;z-index:100;font-weight:600;max-width:90vw;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.toast.err{background:var(--red)}
+.imgv{width:100%;border-radius:10px;border:1px solid var(--line);background:#fff}
+.load{padding:30px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div id="pantallaLogin" class="login" hidden>
+  <form id="fLogin">
+    <img src="../img/logo.png" alt="Técnicos del Poblado">
+    <h1 id="loginTitulo">Panel de administración</h1>
+    <p id="loginSub">Ingresa con tu correo y contraseña.</p>
+    <label class="f" id="lEmail">Correo<input type="email" id="email" autocomplete="username" required></label>
+    <label class="f">Contraseña<input type="password" id="pass" autocomplete="current-password" required minlength="6"></label>
+    <button class="btn" id="bLogin">Ingresar</button>
+    <a href="#" id="olvide" class="small" style="text-align:center">¿Olvidaste tu contraseña?</a>
+    <div class="msg" id="loginMsg"></div>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <div class="top">
+    <div class="bar">
+      <div class="b"><img src="../img/icono-blanco.png" alt="">Técnicos del Poblado</div>
+      <div class="u"><span id="quien"></span><button id="salir">Salir</button></div>
+    </div>
+    <nav class="tabs" id="tabs"></nav>
+  </div>
+  <main id="main"></main>
+</div>
+
+<div id="modal"></div>
+<div id="modal2"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script>
+"use strict";
+// =====================================================================
+// Utilidades
+// =====================================================================
+const HASH_INICIAL = location.hash;   // se lee antes de que Supabase limpie la URL
+const C = window.TDP || {};
+const sb = supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY);
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num = v => { const n = parseInt(String(v ?? "").replace(/[^\d-]/g, ""), 10); return isNaN(n) ? 0 : n; };
+const plata = v => "$" + Math.round(Number(v) || 0).toLocaleString("es-CO");
+const hoy = () => new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
+const sumarDias = (iso, d) => { const x = new Date(iso + "T12:00:00"); x.setDate(x.getDate() + d); return x.toISOString().slice(0, 10); };
+const fecha = iso => iso ? new Date(String(iso).slice(0, 10) + "T12:00:00").toLocaleDateString("es-CO", { day: "2-digit", month: "2-digit", year: "numeric" }) : "";
+const fechaLarga = iso => iso ? new Date(String(iso).slice(0, 10) + "T12:00:00").toLocaleDateString("es-CO", { weekday: "long", day: "numeric", month: "long" }) : "";
+const tel57 = t => { let d = String(t || "").replace(/\D/g, ""); if (d.length === 10) d = "57" + d; return d; };
+const waLink = (t, msg) => "https://wa.me/" + tel57(t) + (msg ? "?text=" + encodeURIComponent(msg) : "");
+const conBarrio = (dir, barrio, sep) => (!barrio || String(dir || "").toLowerCase().includes(String(barrio).toLowerCase()))
+  ? String(dir || barrio || "") : [dir, barrio].filter(Boolean).join(sep);
+const primerNombre = n => String(n || "").trim().split(/\s+/)[0] || "";
+
+const ESTADOS = { por_confirmar: "Por confirmar", agendado: "Agendado", en_proceso: "En proceso",
+  esperando_repuesto: "Esperando repuesto", terminado: "Terminado", cancelado: "Cancelado" };
+const EQUIPOS = ["Lavadora", "Nevera", "Aire acondicionado", "Calentador", "Secadora", "Estufa", "Otro"];
+const CUENTAS = { efectivo: "Efectivo", nequi: "Nequi", bancolombia: "Bancolombia", daviplata: "Daviplata" };
+const CATEGORIAS = { pago_servicio: "Pago de servicio", gasto: "Gasto", pago_tecnico: "Pago a técnico",
+  aporte_socio: "Aporte de socio", devolucion_socio: "Devolución a socio", retiro_socio: "Retiro de utilidades",
+  ajuste: "Ajuste", repuesto: "Repuesto" };
+const opts = (obj, sel) => Object.entries(obj).map(([k, v]) => `<option value="${k}" ${k === sel ? "selected" : ""}>${esc(v)}</option>`).join("");
+const optsArr = (arr, sel) => arr.map(v => `<option ${v === sel ? "selected" : ""}>${esc(v)}</option>`).join("");
+const badge = e => `<span class="badge b-${e}">${esc(ESTADOS[e] || e)}</span>`;
+
+function toast(t, err) {
+  const d = document.createElement("div"); d.className = "toast" + (err ? " err" : ""); d.textContent = t;
+  document.body.appendChild(d); setTimeout(() => d.remove(), err ? 5000 : 2600);
+}
+function ok(res, msg) {
+  if (res.error) { console.error(res.error); toast("Error: " + (res.error.message || res.error), true); throw res.error; }
+  if (msg) toast(msg);
+  return res.data;
+}
+function abrirModal(titulo, cuerpo, pie = "", capa = "#modal") {
+  const cont = $(capa);
+  cont.innerHTML = `<div class="ov"><div class="md">
+    <div class="hd"><h2>${titulo}</h2><button class="x" data-cerrar>×</button></div>
+    <div class="bd">${cuerpo}</div>${pie ? `<div class="ft">${pie}</div>` : ""}</div></div>`;
+  $(".ov", cont).addEventListener("click", e => { if (e.target.classList.contains("ov") || e.target.hasAttribute("data-cerrar")) cerrarModal(capa); });
+  document.body.style.overflow = "hidden";
+  return $(".md", cont);
+}
+function cerrarModal(capa = "#modal") { $(capa).innerHTML = ""; if (!$("#modal").innerHTML && !$("#modal2").innerHTML) document.body.style.overflow = ""; }
+
+// =====================================================================
+// Sesión
+// =====================================================================
+let S = { vista: "inicio", cfg: { visita_valor: 40000, garantia_meses: 6 }, socios: [], tecnicos: [], filtroServ: "activos", caja: null };
+let modoPassword = /type=(invite|recovery)/.test(HASH_INICIAL);
+
+function mostrarLogin(modo) {
+  $("#app").hidden = true; $("#pantallaLogin").hidden = false;
+  const nueva = modo === "password";
+  $("#loginTitulo").textContent = nueva ? "Crea tu contraseña" : "Panel de administración";
+  $("#loginSub").textContent = nueva ? "Escribe la contraseña que vas a usar para entrar." : "Ingresa con tu correo y contraseña.";
+  $("#lEmail").hidden = nueva; $("#email").required = !nueva; $("#olvide").hidden = nueva;
+  $("#pass").autocomplete = nueva ? "new-password" : "current-password";
+  $("#bLogin").textContent = nueva ? "Guardar contraseña" : "Ingresar";
+  $("#fLogin").dataset.modo = nueva ? "password" : "login";
+}
+
+$("#fLogin").addEventListener("submit", async e => {
+  e.preventDefault();
+  const m = $("#loginMsg"); m.className = "msg"; m.textContent = "…"; $("#bLogin").disabled = true;
+  try {
+    if (e.target.dataset.modo === "password") {
+      const { error } = await sb.auth.updateUser({ password: $("#pass").value });
+      if (error) throw error;
+      modoPassword = false; history.replaceState(null, "", location.pathname);
+      await arrancar();
+    } else {
+      const { error } = await sb.auth.signInWithPassword({ email: $("#email").value.trim(), password: $("#pass").value });
+      if (error) throw new Error(error.message.includes("Invalid") ? "Correo o contraseña incorrectos." : error.message);
+      await arrancar();
+    }
+  } catch (err) { m.className = "msg err"; m.textContent = err.message || String(err); }
+  $("#bLogin").disabled = false;
+});
+$("#olvide").addEventListener("click", async e => {
+  e.preventDefault();
+  const email = $("#email").value.trim(), m = $("#loginMsg");
+  if (!email) { m.className = "msg err"; m.textContent = "Escribe tu correo primero."; return; }
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+  m.className = error ? "msg err" : "msg ok";
+  m.textContent = error ? error.message : "Te enviamos un correo para crear una nueva contraseña.";
+});
+$("#salir").addEventListener("click", async () => { await sb.auth.signOut(); location.reload(); });
+sb.auth.onAuthStateChange(ev => { if (ev === "PASSWORD_RECOVERY") { modoPassword = true; mostrarLogin("password"); } });
+
+async function arrancar() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return mostrarLogin("login");
+  if (modoPassword) return mostrarLogin("password");
+  const { data: esAdmin } = await sb.rpc("es_admin");
+  if (!esAdmin) {
+    await sb.auth.signOut(); mostrarLogin("login");
+    $("#loginMsg").className = "msg err"; $("#loginMsg").textContent = "Este correo no está autorizado para el panel.";
+    return;
+  }
+  $("#pantallaLogin").hidden = true; $("#app").hidden = false;
+  $("#quien").textContent = session.user.email;
+  if (C.RENDER_URL) fetch(C.RENDER_URL + "/").catch(() => {});   // despierta el servidor de facturas
+  const [cfg, soc, tec] = await Promise.all([
+    sb.from("config").select("*").eq("id", 1).single(),
+    sb.from("socios").select("*").order("nombre"),
+    sb.from("tecnicos").select("*").eq("activo", true).order("nombre"),
+  ]);
+  if (cfg.data) S.cfg = cfg.data; S.socios = soc.data || []; S.tecnicos = tec.data || [];
+  ir(S.vista);
+}
+
+// =====================================================================
+// Navegación
+// =====================================================================
+const VISTAS = { inicio: "Inicio", servicios: "Servicios", clientes: "Clientes", caja: "Caja",
+  socios: "Socios y Héctor", garantias: "Garantías", recordatorios: "Recordatorios" };
+async function ir(v) {
+  S.vista = v;
+  const [sol, rec] = await Promise.all([
+    sb.from("solicitudes").select("id", { count: "exact", head: true }).eq("estado", "nueva"),
+    sb.from("servicios").select("id", { count: "exact", head: true }).eq("recordatorio_estado", "pendiente").lte("recordatorio_fecha", hoy()),
+  ]);
+  const cuenta = { inicio: sol.count || 0, recordatorios: rec.count || 0 };
+  $("#tabs").innerHTML = Object.entries(VISTAS).map(([k, t]) =>
+    `<button data-v="${k}" class="${k === v ? "on" : ""}">${t}${cuenta[k] ? `<span class="n">${cuenta[k]}</span>` : ""}</button>`).join("");
+  $("#tabs").querySelectorAll("button").forEach(b => b.onclick = () => ir(b.dataset.v));
+  $("#main").innerHTML = `<div class="load">Cargando…</div>`;
+  try { await ({ inicio: vInicio, servicios: vServicios, clientes: vClientes, caja: vCaja, socios: vSocios,
+    garantias: vGarantias, recordatorios: vRecordatorios })[v](); }
+  catch (e) { console.error(e); $("#main").innerHTML = `<div class="empty">No se pudo cargar. ${esc(e.message || "")}</div>`; }
+}
+const refrescar = () => ir(S.vista);
+
+function filaServicio(s) {
+  const eq = [s.equipo_tipo, s.equipo_marca].filter(Boolean).join(" · ");
+  return `<div class="item" data-serv="${s.id}">
+    <div><div class="t">#${s.numero} · ${esc(s.cliente_nombre)} ${s.es_garantia ? '<span class="badge b-garantia">Garantía</span>' : ""}</div>
+      <div class="s">${esc(eq || "Sin equipo")}${s.fecha ? " · " + fecha(s.fecha) : ""}${s.franja ? " " + esc(s.franja) : ""}</div></div>
+    <div class="r">${badge(s.estado)}<div class="s">${plata(s.total)}${s.saldo > 0 && s.estado === "terminado" ? ` · <span class="neg">debe ${plata(s.saldo)}</span>` : ""}</div></div>
+  </div>`;
+}
+function enlazarServicios(cont) { cont.querySelectorAll("[data-serv]").forEach(el => el.onclick = () => abrirServicio(el.dataset.serv)); }
+
+// =====================================================================
+// INICIO
+// =====================================================================
+async function vInicio() {
+  const [sol, act, saldos, cobrar, rec] = await Promise.all([
+    sb.from("solicitudes").select("*").eq("estado", "nueva").order("created_at", { ascending: false }),
+    sb.from("v_servicios").select("*").not("estado", "in", "(terminado,cancelado)").order("fecha", { ascending: true, nullsFirst: true }),
+    sb.from("v_saldos_cuentas").select("*"),
+    sb.from("v_servicios").select("saldo").eq("estado", "terminado").gt("saldo", 0),
+    sb.from("servicios").select("id", { count: "exact", head: true }).eq("recordatorio_estado", "pendiente").lte("recordatorio_fecha", hoy()),
+  ]);
+  const caja = (saldos.data || []).reduce((a, x) => a + Number(x.saldo), 0);
+  const porCobrar = (cobrar.data || []).reduce((a, x) => a + Number(x.saldo), 0);
+  $("#main").innerHTML = `
+    <div class="grid g4" style="margin-bottom:16px">
+      <div class="box kpi"><small>Caja total</small><b>${plata(caja)}</b></div>
+      <div class="box kpi ${porCobrar ? "neg" : ""}"><small>Por cobrar</small><b>${plata(porCobrar)}</b></div>
+      <div class="box kpi"><small>Servicios activos</small><b>${(act.data || []).length}</b></div>
+      <div class="box kpi"><small>Recordatorios hoy</small><b>${rec.count || 0}</b></div>
+    </div>
+    <div class="row sp"><h2>Solicitudes de la página</h2><button class="btn sm" id="nuevoServ">+ Nuevo servicio</button></div>
+    <div class="list" id="lSol" style="margin-bottom:22px">${(sol.data || []).length ? sol.data.map(x => `
+      <div class="item" style="cursor:default">
+        <div><div class="t">${esc(x.nombre)} · ${esc(x.tipo_equipo || "")}</div>
+          <div class="s">${esc(x.telefono)}${x.barrio ? " · " + esc(x.barrio) : ""} · ${new Date(x.created_at).toLocaleString("es-CO", { dateStyle: "short", timeStyle: "short" })}</div>
+          ${x.mensaje ? `<div class="s" style="margin-top:4px">“${esc(x.mensaje)}”</div>` : ""}</div>
+        <div class="row"><a class="btn sm wa" target="_blank" href="${waLink(x.telefono, `Hola ${primerNombre(x.nombre)}, te habla Técnicos del Poblado. Recibimos tu solicitud para tu ${(x.tipo_equipo || "equipo").toLowerCase()}. ¿Qué día y a qué hora te queda bien la visita?`)}">WhatsApp</a>
+          <button class="btn sm" data-conv="${x.id}">Crear servicio</button>
+          <button class="btn sm red" data-desc="${x.id}">Descartar</button></div>
+      </div>`).join("") : `<div class="empty">No hay solicitudes nuevas.</div>`}</div>
+    <h2>Servicios activos</h2>
+    <div class="list" id="lAct">${(act.data || []).length ? act.data.map(filaServicio).join("") : `<div class="empty">No hay servicios activos.</div>`}</div>`;
+  $("#nuevoServ").onclick = () => nuevoServicio({});
+  enlazarServicios($("#lAct"));
+  $("#lSol").querySelectorAll("[data-conv]").forEach(b => b.onclick = () => nuevoServicio({ solicitud: sol.data.find(x => x.id === b.dataset.conv) }));
+  $("#lSol").querySelectorAll("[data-desc]").forEach(b => b.onclick = async () => {
+    if (!confirm("¿Descartar esta solicitud?")) return;
+    ok(await sb.from("solicitudes").update({ estado: "descartada" }).eq("id", b.dataset.desc), "Solicitud descartada");
+    refrescar();
+  });
+}
+
+// =====================================================================
+// SERVICIOS
+// =====================================================================
+async function vServicios() {
+  $("#main").innerHTML = `
+    <div class="row sp"><h2>Servicios</h2><button class="btn sm" id="nuevoServ">+ Nuevo servicio</button></div>
+    <div class="chips" id="chips">${[["activos", "Activos"], ["cobrar", "Por cobrar"], ["terminados", "Terminados"], ["todos", "Todos"]]
+      .map(([k, t]) => `<button data-f="${k}" class="${S.filtroServ === k ? "on" : ""}">${t}</button>`).join("")}</div>
+    <input class="s" id="bus" placeholder="Buscar por cliente, teléfono o número de orden" style="margin-bottom:12px">
+    <div class="list" id="lServ"><div class="load">Cargando…</div></div>`;
+  $("#nuevoServ").onclick = () => nuevoServicio({});
+  $("#chips").querySelectorAll("button").forEach(b => b.onclick = () => { S.filtroServ = b.dataset.f; vServicios(); });
+  let t; $("#bus").oninput = () => { clearTimeout(t); t = setTimeout(cargar, 250); };
+  async function cargar() {
+    let q = sb.from("v_servicios").select("*").order("numero", { ascending: false }).limit(200);
+    if (S.filtroServ === "activos") q = q.not("estado", "in", "(terminado,cancelado)");
+    if (S.filtroServ === "cobrar") q = q.eq("estado", "terminado").gt("saldo", 0);
+    if (S.filtroServ === "terminados") q = q.eq("estado", "terminado");
+    const b = $("#bus").value.trim().replace(/[,()%]/g, " ");
+    if (b) q = /^\d{1,6}$/.test(b) ? q.or(`numero.eq.${b},cliente_telefono.ilike.%${b}%`) : q.or(`cliente_nombre.ilike.%${b}%,cliente_telefono.ilike.%${b}%`);
+    const d = ok(await q);
+    $("#lServ").innerHTML = d.length ? d.map(filaServicio).join("") : `<div class="empty">No hay servicios aquí.</div>`;
+    enlazarServicios($("#lServ"));
+  }
+  await cargar();
+}
+
+// ---------- Nuevo servicio (desde cero, desde una solicitud o desde un cliente) ----------
+async function nuevoServicio({ solicitud, cliente }) {
+  let cli = cliente || null, equiposCli = [];
+  if (!cli && solicitud) {
+    const tel = String(solicitud.telefono).replace(/\D/g, "").slice(-10);
+    const r = await sb.from("clientes").select("*").ilike("telefono", `%${tel}%`).limit(1);
+    cli = (r.data || [])[0] || null;
+  }
+  if (cli) equiposCli = (await sb.from("equipos").select("*").eq("cliente_id", cli.id)).data || [];
+  const tecDef = (S.tecnicos[0] || {}).id;
+  const md = abrirModal("Nuevo servicio", `
+    <div class="box"><h3>Cliente</h3>
+      ${cli ? `<div class="row sp"><div><b>${esc(cli.nombre)}</b><div class="muted small">${esc(cli.telefono || "")} · ${esc(cli.barrio || "")}</div></div><button class="btn sm sec" id="otroCli">Cambiar</button></div>
+        <input type="hidden" id="cliId" value="${cli.id}">` : `
+      <label class="f" style="margin-bottom:10px">Buscar cliente existente<input id="busCli" placeholder="Nombre o teléfono"></label>
+      <div class="list" id="resCli" style="margin-bottom:10px"></div>
+      <div class="fg">
+        <label class="f">Nombre *<input id="nNombre" value="${esc(solicitud?.nombre || "")}"></label>
+        <label class="f">WhatsApp *<input id="nTel" inputmode="tel" value="${esc(solicitud?.telefono || "")}"></label>
+        <label class="f">Barrio<input id="nBarrio" value="${esc(solicitud?.barrio || "")}"></label>
+        <label class="f">Dirección<input id="nDir"></label>
+      </div>`}
+    </div>
+    <div class="box"><h3>Equipo</h3>
+      ${equiposCli.length ? `<label class="f" style="margin-bottom:10px">Equipo del cliente<select id="eqId"><option value="">— Equipo nuevo —</option>
+        ${equiposCli.map(e => `<option value="${e.id}">${esc([e.tipo, e.marca, e.modelo].filter(Boolean).join(" · "))}</option>`).join("")}</select></label>` : ""}
+      <div class="fg" id="eqNuevo">
+        <label class="f">Tipo *<select id="eTipo"><option value="">Selecciona</option>${optsArr(EQUIPOS, solicitud?.tipo_equipo)}</select></label>
+        <label class="f">Marca<input id="eMarca" placeholder="LG, Samsung…"></label>
+        <label class="f">Modelo<input id="eModelo"></label>
+      </div>
+    </div>
+    <div class="box"><h3>Visita</h3>
+      <div class="fg">
+        <label class="f">Fecha<input type="date" id="sFecha"></label>
+        <label class="f">Hora / franja<input id="sFranja" placeholder="Ej: 2:00 p. m. – 3:00 p. m."></label>
+        <label class="f">Técnico<select id="sTec">${S.tecnicos.map(t => `<option value="${t.id}" ${t.id === tecDef ? "selected" : ""}>${esc(t.nombre)}</option>`).join("")}</select></label>
+        <label class="f">Valor visita<input id="sVisita" inputmode="numeric" value="${plata(S.cfg.visita_valor)}"></label>
+      </div>
+      <label class="f" style="margin-top:10px">Dirección de la visita<input id="sDir" value="${esc(cli?.direccion || "")}"></label>
+      <label class="f" style="margin-top:10px">¿Qué le pasa al equipo?<textarea id="sFalla">${esc(solicitud?.mensaje || "")}</textarea></label>
+    </div>`, `<button class="btn sec" data-cerrar>Cancelar</button><button class="btn" id="guardarNuevo">Crear servicio</button>`);
+
+  const eqSel = $("#eqId", md);
+  if (eqSel) eqSel.onchange = () => { $("#eqNuevo", md).hidden = !!eqSel.value; };
+  if ($("#otroCli", md)) $("#otroCli", md).onclick = () => nuevoServicio({ solicitud });
+  const bus = $("#busCli", md);
+  if (bus) {
+    let t; bus.oninput = () => { clearTimeout(t); t = setTimeout(async () => {
+      const q = bus.value.trim().replace(/[,()%]/g, " ");
+      if (q.length < 2) { $("#resCli", md).innerHTML = ""; return; }
+      const r = await sb.from("clientes").select("*").or(`nombre.ilike.%${q}%,telefono.ilike.%${q}%`).limit(6);
+      $("#resCli", md).innerHTML = (r.data || []).map(c => `<div class="item" data-c="${c.id}"><div><div class="t">${esc(c.nombre)}</div><div class="s">${esc(c.telefono || "")} · ${esc(c.barrio || "")}</div></div><span class="btn sm sec">Usar</span></div>`).join("");
+      $("#resCli", md).querySelectorAll("[data-c]").forEach(el => el.onclick = () => nuevoServicio({ solicitud, cliente: r.data.find(c => c.id === el.dataset.c) }));
+    }, 250); };
+  }
+  $("#guardarNuevo", md).onclick = async e => {
+    const btn = e.target; btn.disabled = true;
+    try {
+      let clienteId = $("#cliId", md)?.value;
+      if (!clienteId) {
+        const nombre = $("#nNombre", md).value.trim(), telefono = $("#nTel", md).value.trim();
+        if (!nombre || !telefono) { toast("Escribe nombre y WhatsApp del cliente", true); btn.disabled = false; return; }
+        const c = ok(await sb.from("clientes").insert({ nombre, telefono, barrio: $("#nBarrio", md).value.trim() || null,
+          direccion: $("#nDir", md).value.trim() || null }).select().single());
+        clienteId = c.id;
+        if (!$("#sDir", md).value.trim()) $("#sDir", md).value = [c.direccion, c.barrio].filter(Boolean).join(", ");
+      }
+      let equipoId = eqSel?.value || null;
+      if (!equipoId && $("#eTipo", md).value) {
+        const eq = ok(await sb.from("equipos").insert({ cliente_id: clienteId, tipo: $("#eTipo", md).value,
+          marca: $("#eMarca", md).value.trim() || null, modelo: $("#eModelo", md).value.trim() || null }).select().single());
+        equipoId = eq.id;
+      }
+      const f = $("#sFecha", md).value || null;
+      const s = ok(await sb.from("servicios").insert({
+        cliente_id: clienteId, equipo_id: equipoId, tecnico_id: $("#sTec", md).value || null,
+        solicitud_id: solicitud?.id || null, fecha: f, franja: $("#sFranja", md).value.trim() || null,
+        direccion: $("#sDir", md).value.trim() || null, falla: $("#sFalla", md).value.trim() || null,
+        valor_visita: num($("#sVisita", md).value), estado: f ? "agendado" : "por_confirmar",
+      }).select().single());
+      if (solicitud) ok(await sb.from("solicitudes").update({ estado: "convertida", servicio_id: s.id }).eq("id", solicitud.id));
+      toast("Servicio #" + s.numero + " creado");
+      abrirServicio(s.id);
+      if (S.vista !== "servicios") refrescar();
+    } catch (err) { btn.disabled = false; }
+  };
+}
+
+// ---------- Detalle de un servicio ----------
+async function abrirServicio(id) {
+  const [sv, rep, pag] = await Promise.all([
+    sb.from("v_servicios").select("*").eq("id", id).single(),
+    sb.from("repuestos").select("*").eq("servicio_id", id).order("created_at"),
+    sb.from("movimientos").select("*").eq("servicio_id", id).eq("categoria", "pago_servicio").order("fecha"),
+  ]);
+  const s = ok(sv), repuestos = rep.data || [], pagos = pag.data || [];
+  let cli = {}, eq = null;
+  const r1 = await sb.from("clientes").select("*").eq("id", s.cliente_id).single(); cli = r1.data || {};
+  if (s.equipo_id) eq = (await sb.from("equipos").select("*").eq("id", s.equipo_id).single()).data;
+  const hoyIso = hoy();
+  const enGarantia = s.garantia_hasta && s.garantia_hasta >= hoyIso;
+
+  const md = abrirModal(`Orden #${s.numero} ${s.es_garantia ? '<span class="badge b-garantia">Garantía</span>' : ""}`, `
+    <div class="box">
+      <div class="row sp"><div><b style="font-size:16px">${esc(cli.nombre)}</b>
+        <div class="muted small">${esc(cli.telefono || "")}${cli.barrio ? " · " + esc(cli.barrio) : ""}</div></div>
+        <div class="row"><a class="btn sm wa" target="_blank" href="${waLink(cli.telefono)}">WhatsApp</a>
+          <button class="btn sm sec" id="verCli">Ver cliente</button></div></div>
+      ${s.servicio_origen_id ? `<p class="small muted" style="margin-top:8px">Reclamo de garantía de otra orden. <a href="#" id="verOrigen">Ver orden original</a></p>` : ""}
+    </div>
+    <div class="box"><h3>Estado y visita</h3>
+      <div class="fg">
+        <label class="f">Estado<select id="dEstado">${opts(ESTADOS, s.estado)}</select></label>
+        <label class="f">Fecha<input type="date" id="dFecha" value="${s.fecha || ""}"></label>
+        <label class="f">Hora / franja<input id="dFranja" value="${esc(s.franja || "")}"></label>
+        <label class="f">Técnico<select id="dTec"><option value="">—</option>${S.tecnicos.map(t => `<option value="${t.id}" ${t.id === s.tecnico_id ? "selected" : ""}>${esc(t.nombre)}</option>`).join("")}</select></label>
+      </div>
+      <label class="f" style="margin-top:10px">Dirección<input id="dDir" value="${esc(s.direccion || "")}"></label>
+    </div>
+    <div class="box"><h3>Equipo</h3>
+      <div class="fg">
+        <label class="f">Tipo<select id="eTipo"><option value="">—</option>${optsArr(EQUIPOS, eq?.tipo)}</select></label>
+        <label class="f">Marca<input id="eMarca" value="${esc(eq?.marca || "")}"></label>
+        <label class="f">Modelo<input id="eModelo" value="${esc(eq?.modelo || "")}"></label>
+        <label class="f">Serial<input id="eSerial" value="${esc(eq?.serial || "")}"></label>
+      </div>
+    </div>
+    <div class="box"><h3>Trabajo</h3>
+      <div class="grid">
+        <label class="f">Falla reportada<textarea id="dFalla">${esc(s.falla || "")}</textarea></label>
+        <label class="f">Diagnóstico<textarea id="dDiag">${esc(s.diagnostico || "")}</textarea></label>
+        <label class="f">Trabajo realizado (sale en la factura)<textarea id="dTrabajo">${esc(s.trabajo || "")}</textarea></label>
+        <label class="f">Notas internas<textarea id="dNotas">${esc(s.notas || "")}</textarea></label>
+      </div>
+    </div>
+    <div class="box"><h3>Cobro</h3>
+      <label class="chk" style="margin-bottom:10px"><input type="checkbox" id="dAut" ${s.autorizado ? "checked" : ""}>El cliente autorizó la reparación (la visita se descuenta)</label>
+      <div class="fg">
+        <label class="f">Valor visita<input id="dVisita" inputmode="numeric" value="${plata(s.valor_visita)}"></label>
+        <label class="f">Mano de obra<input id="dMano" inputmode="numeric" value="${plata(s.mano_obra)}"></label>
+        <label class="f">Descuento<input id="dDesc" inputmode="numeric" value="${plata(s.descuento)}"></label>
+      </div>
+      <p class="small muted" style="margin-top:8px" id="explica"></p>
+    </div>
+    <div class="box"><div class="row sp"><h3>Repuestos</h3><button class="btn sm sec" id="addRep">+ Repuesto</button></div>
+      ${repuestos.length ? `<table><tr><th>Repuesto</th><th class="n">Costo</th><th class="n">Cobrado</th><th>Lo pagó</th><th></th></tr>
+        ${repuestos.map(r => `<tr><td>${esc(r.descripcion)}</td><td class="n">${plata(r.costo)}</td><td class="n">${plata(r.precio_cliente)}</td>
+          <td class="small">${r.pagado_por === "caja" ? "Caja · " + esc(CUENTAS[r.cuenta] || r.cuenta) : r.pagado_por === "socio" ? esc((S.socios.find(x => x.id === r.socio_id) || {}).nombre || "Socio") : r.pagado_por === "tecnico" ? "Técnico" : "Cliente"}</td>
+          <td class="n"><button class="btn sm red" data-delrep="${r.id}">×</button></td></tr>`).join("")}</table>` : `<p class="muted small">Sin repuestos.</p>`}
+      <div id="formRep"></div>
+    </div>
+    <div class="box"><div class="row sp"><h3>Pagos del cliente</h3><button class="btn sm sec" id="addPago">+ Pago / abono</button></div>
+      ${pagos.length ? `<table>${pagos.map(p => `<tr><td>${fecha(p.fecha)}</td><td>${esc(CUENTAS[p.cuenta] || p.cuenta)}</td><td class="n">${plata(p.valor)}</td>
+        <td class="n"><button class="btn sm red" data-delpago="${p.id}">×</button></td></tr>`).join("")}</table>` : `<p class="muted small">Sin pagos todavía.</p>`}
+      <div id="formPago"></div>
+      <div class="sep"></div>
+      <div class="tot">
+        <span>Total del servicio</span><b class="big">${plata(s.total)}</b>
+        <span>Pagado</span><b class="pos">${plata(s.pagado)}</b>
+        <span>Saldo</span><b class="${s.saldo > 0 ? "neg" : ""}">${plata(s.saldo)}</b>
+        <span class="muted">Para ${esc(s.tecnico_nombre || "el técnico")} (${Number(s.tecnico_pct)}% de lo cobrado − repuestos)</span><b class="muted">${plata(s.tecnico_gana)}</b>
+      </div>
+    </div>
+    ${s.estado === "terminado" ? `<div class="box"><h3>Garantía y mantenimiento</h3>
+      <p>${s.garantia_hasta ? `Garantía ${enGarantia ? "vigente" : "vencida"} hasta <b>${fecha(s.garantia_hasta)}</b>.` : "Sin garantía (no hubo reparación autorizada)."}</p>
+      ${s.recordatorio_fecha ? `<p class="small muted" style="margin-top:4px">Recordatorio de mantenimiento: ${fecha(s.recordatorio_fecha)} (${s.recordatorio_estado === "pendiente" ? "pendiente" : s.recordatorio_estado === "contactado" ? "ya contactado" : "no aplica"}).</p>` : ""}
+      ${enGarantia ? `<button class="btn sm sec" id="reclamo" style="margin-top:10px">Crear reclamo de garantía</button>` : ""}
+    </div>` : ""}
+    <div class="box"><h3>Documentos</h3>
+      <div class="row">
+        <button class="btn sec" id="verOrden">Orden de servicio</button>
+        <button class="btn sec" id="verFactura">Factura</button>
+        <button class="btn wa" id="enviarFactura">Enviar factura por WhatsApp</button>
+      </div>
+    </div>`,
+    `${!pagos.length && !repuestos.length ? `<button class="btn red" id="borrar" style="margin-right:auto">Eliminar</button>` : ""}
+     <button class="btn sec" data-cerrar>Cerrar</button><button class="btn" id="guardar">Guardar cambios</button>`);
+
+  // Explicación del cálculo en vivo
+  const explica = () => {
+    const aut = $("#dAut", md).checked, rp = repuestos.reduce((a, r) => a + Number(r.precio_cliente), 0);
+    const t = aut ? num($("#dMano", md).value) + rp - num($("#dDesc", md).value) : (s.es_garantia ? 0 : num($("#dVisita", md).value) - num($("#dDesc", md).value));
+    $("#explica", md).innerHTML = aut
+      ? `Total = mano de obra + repuestos cobrados${num($("#dDesc", md).value) ? " − descuento" : ""} = <b>${plata(Math.max(0, t))}</b>. La visita queda incluida (descontada).`
+      : (s.es_garantia ? "Reclamo de garantía: no se cobra visita." : `Si no autoriza la reparación, solo se cobra la visita: <b>${plata(Math.max(0, t))}</b>.`);
+  };
+  ["#dAut", "#dMano", "#dDesc", "#dVisita"].forEach(k => $(k, md).addEventListener("input", explica)); explica();
+  md.querySelectorAll("input[inputmode=numeric]").forEach(i => i.addEventListener("blur", () => { i.value = plata(num(i.value)); }));
+
+  const leer = () => ({
+    estado: $("#dEstado", md).value, fecha: $("#dFecha", md).value || null, franja: $("#dFranja", md).value.trim() || null,
+    tecnico_id: $("#dTec", md).value || null, direccion: $("#dDir", md).value.trim() || null,
+    falla: $("#dFalla", md).value.trim() || null, diagnostico: $("#dDiag", md).value.trim() || null,
+    trabajo: $("#dTrabajo", md).value.trim() || null, notas: $("#dNotas", md).value.trim() || null,
+    autorizado: $("#dAut", md).checked, valor_visita: num($("#dVisita", md).value),
+    mano_obra: num($("#dMano", md).value), descuento: num($("#dDesc", md).value),
+  });
+  async function guardar(silencioso) {
+    const datos = leer();
+    // Equipo: actualizar o crear
+    const eqDatos = { tipo: $("#eTipo", md).value, marca: $("#eMarca", md).value.trim() || null,
+      modelo: $("#eModelo", md).value.trim() || null, serial: $("#eSerial", md).value.trim() || null };
+    if (eq && eqDatos.tipo) ok(await sb.from("equipos").update(eqDatos).eq("id", eq.id));
+    else if (!eq && eqDatos.tipo) {
+      eq = ok(await sb.from("equipos").insert({ ...eqDatos, cliente_id: s.cliente_id }).select().single());
+      datos.equipo_id = eq.id;
+    }
+    ok(await sb.from("servicios").update(datos).eq("id", s.id), silencioso ? null : "Guardado");
+  }
+  $("#guardar", md).onclick = async e => { e.target.disabled = true; try { await guardar(); await abrirServicio(s.id); refrescar(); } catch (_) { e.target.disabled = false; } };
+  $("#verCli", md).onclick = () => abrirCliente(s.cliente_id);
+  if ($("#verOrigen", md)) $("#verOrigen", md).onclick = ev => { ev.preventDefault(); abrirServicio(s.servicio_origen_id); };
+  if ($("#borrar", md)) $("#borrar", md).onclick = async () => {
+    if (!confirm(`¿Eliminar la orden #${s.numero}? No se puede deshacer.`)) return;
+    ok(await sb.from("servicios").delete().eq("id", s.id), "Orden eliminada"); cerrarModal(); refrescar();
+  };
+  if ($("#reclamo", md)) $("#reclamo", md).onclick = async () => {
+    const n = ok(await sb.from("servicios").insert({ cliente_id: s.cliente_id, equipo_id: s.equipo_id, tecnico_id: s.tecnico_id,
+      es_garantia: true, servicio_origen_id: s.id, valor_visita: 0, direccion: s.direccion,
+      falla: `Reclamo de garantía de la orden #${s.numero}. `, estado: "por_confirmar" }).select().single());
+    toast("Reclamo creado: orden #" + n.numero); abrirServicio(n.id); refrescar();
+  };
+
+  // Repuestos
+  $("#addRep", md).onclick = () => {
+    $("#formRep", md).innerHTML = `<div class="sep"></div><div class="fg">
+      <label class="f">Repuesto<input id="rDesc" placeholder="Ej: Correa, filtro…"></label>
+      <label class="f">Costo (lo que costó)<input id="rCosto" inputmode="numeric"></label>
+      <label class="f">Se le cobra al cliente<input id="rPrecio" inputmode="numeric"></label>
+      <label class="f">Lo pagó<select id="rPor"><option value="caja">La caja</option><option value="tecnico">El técnico</option><option value="socio">Un socio</option><option value="cliente">El cliente lo compró</option></select></label>
+      <label class="f" id="rCtaL">Cuenta<select id="rCta">${opts(CUENTAS)}</select></label>
+      <label class="f" id="rSocL" hidden>Socio<select id="rSoc">${S.socios.map(x => `<option value="${x.id}">${esc(x.nombre)}</option>`).join("")}</select></label>
+    </div><div class="row" style="margin-top:10px;justify-content:flex-end"><button class="btn sm" id="rOk">Agregar repuesto</button></div>`;
+    const por = $("#rPor", md);
+    por.onchange = () => { $("#rCtaL", md).hidden = por.value !== "caja"; $("#rSocL", md).hidden = por.value !== "socio"; };
+    $("#rOk", md).onclick = async () => {
+      const d = { servicio_id: s.id, descripcion: $("#rDesc", md).value.trim(), costo: num($("#rCosto", md).value),
+        precio_cliente: num($("#rPrecio", md).value), pagado_por: por.value,
+        cuenta: por.value === "caja" ? $("#rCta", md).value : null, socio_id: por.value === "socio" ? $("#rSoc", md).value : null };
+      if (!d.descripcion) return toast("Escribe el repuesto", true);
+      await guardar(true); ok(await sb.from("repuestos").insert(d), "Repuesto agregado"); abrirServicio(s.id);
+    };
+  };
+  md.querySelectorAll("[data-delrep]").forEach(b => b.onclick = async () => {
+    if (!confirm("¿Quitar este repuesto?")) return;
+    await guardar(true); ok(await sb.from("repuestos").delete().eq("id", b.dataset.delrep), "Repuesto quitado"); abrirServicio(s.id);
+  });
+
+  // Pagos
+  $("#addPago", md).onclick = () => {
+    $("#formPago", md).innerHTML = `<div class="sep"></div><div class="fg">
+      <label class="f">Valor<input id="pValor" inputmode="numeric" value="${s.saldo > 0 ? plata(s.saldo) : ""}"></label>
+      <label class="f">Cuenta<select id="pCta">${opts(CUENTAS)}</select></label>
+      <label class="f">Fecha<input type="date" id="pFecha" value="${hoyIso}"></label>
+    </div><div class="row" style="margin-top:10px;justify-content:flex-end"><button class="btn sm" id="pOk">Registrar pago</button></div>`;
+    $("#pOk", md).onclick = async () => {
+      const v = num($("#pValor", md).value); if (v <= 0) return toast("Escribe el valor", true);
+      await guardar(true);
+      ok(await sb.from("movimientos").insert({ tipo: "ingreso", categoria: "pago_servicio", valor: v, cuenta: $("#pCta", md).value,
+        fecha: $("#pFecha", md).value || hoyIso, servicio_id: s.id, descripcion: `Orden #${s.numero} · ${cli.nombre}` }), "Pago registrado");
+      abrirServicio(s.id); refrescar();
+    };
+  };
+  md.querySelectorAll("[data-delpago]").forEach(b => b.onclick = async () => {
+    if (!confirm("¿Borrar este pago?")) return;
+    ok(await sb.from("movimientos").delete().eq("id", b.dataset.delpago), "Pago borrado"); abrirServicio(s.id); refrescar();
+  });
+
+  // Documentos
+  const datosOrden = () => ({
+    cliente: cli.nombre, telefono: cli.telefono || "",
+    direccion: conBarrio($("#dDir", md).value.trim(), cli.barrio, "\n"),
+    fecha: fechaLarga($("#dFecha", md).value), hora: $("#dFranja", md).value.trim(),
+    servicio: [[$("#eTipo", md).value, $("#eMarca", md).value.trim()].filter(Boolean).join(" "), $("#dFalla", md).value.trim()].filter(Boolean).join("\n"),
+  });
+  const datosFactura = async () => {
+    await guardar(true);
+    const v = ok(await sb.from("v_servicios").select("*").eq("id", s.id).single());
+    const lineas = [];
+    if (v.autorizado) {
+      if (Number(v.mano_obra)) lineas.push(`Mano de obra: ${plata(v.mano_obra)}`);
+      const cobrados = repuestos.filter(r => Number(r.precio_cliente) > 0);
+      if (cobrados.length > 2) lineas.push(`Repuestos (${cobrados.length}): ${plata(v.repuestos_precio)}`);
+      else cobrados.forEach(r => lineas.push(`Repuesto ${r.descripcion}: ${plata(r.precio_cliente)}`));
+      if (Number(v.valor_visita)) lineas.push(`Visita ${plata(v.valor_visita)} (descontada)`);
+    } else if (v.es_garantia) lineas.push("Servicio de garantía: sin costo");
+    else lineas.push(`Visita técnica y diagnóstico: ${plata(v.valor_visita)}`);
+    if (Number(v.descuento)) lineas.push(`Descuento: −${plata(v.descuento)}`);
+    if (v.saldo > 0 && v.pagado > 0) lineas.push(`Abonado ${plata(v.pagado)} · Saldo ${plata(v.saldo)}`);
+    return {
+      fecha: fecha(v.fecha_terminado || hoy()), cliente: cli.nombre, telefono: cli.telefono || "",
+      direccion: conBarrio(v.direccion, cli.barrio, " · "),
+      equipo: [eq?.tipo, eq?.marca, eq?.modelo].filter(Boolean).join(" "), tecnico: v.tecnico_nombre || "",
+      servicio: v.trabajo || v.diagnostico || v.falla || "", concepto: lineas.slice(0, 5).join("\n"),
+      valor: String(v.total), total: String(v.total),
+      garantia: v.autorizado ? `${S.cfg.garantia_meses} meses sobre el trabajo y los repuestos` : "",
+      vence_garantia: v.garantia_hasta ? fecha(v.garantia_hasta) : "",
+    };
+  };
+  $("#verOrden", md).onclick = () => verImagen("orden", datosOrden(), `orden-${s.numero}.png`, cli);
+  $("#verFactura", md).onclick = async () => verImagen("factura", await datosFactura(), `factura-${s.numero}.png`, cli);
+  $("#enviarFactura", md).onclick = async e => {
+    if (!cli.telefono) return toast("El cliente no tiene WhatsApp", true);
+    if (!confirm(`¿Enviar la factura de la orden #${s.numero} al WhatsApp ${cli.telefono}?`)) return;
+    e.target.disabled = true; e.target.textContent = "Enviando…";
+    try {
+      const r = await llamarRender("/enviar-factura", { to: cli.telefono, tipo: "factura", datos: await datosFactura(), plantilla: true });
+      const j = await r.json();
+      if (!r.ok || !j.ok) throw new Error(j.error || "No se pudo enviar");
+      toast("Factura enviada por WhatsApp ✓");
+    } catch (err) { toast("No se envió: " + err.message, true); }
+    e.target.disabled = false; e.target.textContent = "Enviar factura por WhatsApp";
+  };
+}
+
+async function llamarRender(ruta, cuerpo) {
+  const { data: { session } } = await sb.auth.getSession();
+  return fetch(C.RENDER_URL + ruta, { method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: "Bearer " + session.access_token },
+    body: JSON.stringify(cuerpo) });
+}
+
+async function verImagen(tipo, datos, nombreArchivo, cli) {
+  const md = abrirModal(tipo === "orden" ? "Orden de servicio" : "Factura",
+    `<div class="load" id="imgLoad">Generando imagen… (si el servidor estaba dormido puede tardar ~30 s)</div><img class="imgv" id="imgV" hidden alt="">`,
+    `<button class="btn sec" data-cerrar>Volver</button><a class="btn sec" id="descargar" hidden>Descargar</a><button class="btn wa" id="compartir" hidden>Compartir</button>`, "#modal2");
+  try {
+    const r = await llamarRender("/" + tipo, datos);
+    if (!r.ok) throw new Error(r.status === 401 ? "Sesión vencida, vuelve a ingresar" : "Error " + r.status);
+    const blob = await r.blob(), url = URL.createObjectURL(blob);
+    $("#imgV", md).src = url; $("#imgV", md).hidden = false; $("#imgLoad", md).hidden = true;
+    const a = $("#descargar", md); a.href = url; a.download = nombreArchivo; a.hidden = false;
+    const file = new File([blob], nombreArchivo, { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      const b = $("#compartir", md); b.hidden = false;
+      b.onclick = () => navigator.share({ files: [file], title: nombreArchivo }).catch(() => {});
+    }
+  } catch (e) { $("#imgLoad", md).textContent = "No se pudo generar: " + e.message; }
+}
+
+// =====================================================================
+// CLIENTES
+// =====================================================================
+async function vClientes() {
+  $("#main").innerHTML = `<div class="row sp"><h2>Clientes</h2><button class="btn sm" id="nuevoCli">+ Nuevo cliente</button></div>
+    <input class="s" id="bus" placeholder="Buscar por nombre o teléfono" style="margin-bottom:12px">
+    <div class="list" id="lCli"><div class="load">Cargando…</div></div>`;
+  $("#nuevoCli").onclick = () => abrirCliente(null);
+  let t; $("#bus").oninput = () => { clearTimeout(t); t = setTimeout(cargar, 250); };
+  async function cargar() {
+    let q = sb.from("clientes").select("*, servicios(count)").order("created_at", { ascending: false }).limit(200);
+    const b = $("#bus").value.trim().replace(/[,()%]/g, " ");
+    if (b) q = q.or(`nombre.ilike.%${b}%,telefono.ilike.%${b}%,barrio.ilike.%${b}%`);
+    const d = ok(await q);
+    $("#lCli").innerHTML = d.length ? d.map(c => `<div class="item" data-c="${c.id}"><div><div class="t">${esc(c.nombre)}</div>
+      <div class="s">${esc(c.telefono || "")}${c.barrio ? " · " + esc(c.barrio) : ""}</div></div>
+      <div class="r s">${(c.servicios?.[0]?.count) || 0} servicio(s)</div></div>`).join("") : `<div class="empty">Sin clientes.</div>`;
+    $("#lCli").querySelectorAll("[data-c]").forEach(el => el.onclick = () => abrirCliente(el.dataset.c));
+  }
+  await cargar();
+}
+
+async function abrirCliente(id) {
+  let c = { nombre: "", telefono: "", barrio: "", direccion: "", notas: "" }, equipos = [], servs = [];
+  if (id) {
+    const [a, b, d] = await Promise.all([
+      sb.from("clientes").select("*").eq("id", id).single(),
+      sb.from("equipos").select("*").eq("cliente_id", id).order("created_at"),
+      sb.from("v_servicios").select("*").eq("cliente_id", id).order("numero", { ascending: false }),
+    ]);
+    c = ok(a); equipos = b.data || []; servs = d.data || [];
+  }
+  const totalPagado = servs.reduce((a, s) => a + Number(s.pagado), 0);
+  const md = abrirModal(id ? esc(c.nombre) : "Nuevo cliente", `
+    <div class="box"><div class="fg">
+      <label class="f">Nombre<input id="cNombre" value="${esc(c.nombre)}"></label>
+      <label class="f">WhatsApp<input id="cTel" inputmode="tel" value="${esc(c.telefono || "")}"></label>
+      <label class="f">Barrio<input id="cBarrio" value="${esc(c.barrio || "")}"></label>
+      <label class="f">Dirección<input id="cDir" value="${esc(c.direccion || "")}"></label>
+    </div><label class="f" style="margin-top:10px">Notas<textarea id="cNotas">${esc(c.notas || "")}</textarea></label></div>
+    ${id ? `
+    <div class="box"><div class="row sp"><h3>Equipos</h3><button class="btn sm sec" id="addEq">+ Equipo</button></div>
+      ${equipos.length ? `<table><tr><th>Tipo</th><th>Marca</th><th>Modelo</th><th>Serial</th></tr>${equipos.map(e =>
+        `<tr><td>${esc(e.tipo)}</td><td>${esc(e.marca || "")}</td><td>${esc(e.modelo || "")}</td><td class="small">${esc(e.serial || "")}</td></tr>`).join("")}</table>` : `<p class="muted small">Sin equipos registrados.</p>`}
+      <div id="formEq"></div></div>
+    <div class="box"><div class="row sp"><h3>Historial (${servs.length})</h3><span class="muted small">Ha pagado ${plata(totalPagado)}</span></div>
+      <div class="list" id="hist">${servs.length ? servs.map(filaServicio).join("") : `<p class="muted small">Sin servicios.</p>`}</div></div>` : ""}`,
+    `${id ? `<a class="btn wa" target="_blank" href="${waLink(c.telefono)}" style="margin-right:auto">WhatsApp</a><button class="btn sec" id="nuevoS">Nuevo servicio</button>` : ""}
+     <button class="btn" id="gCli">Guardar</button>`);
+  $("#gCli", md).onclick = async () => {
+    const d = { nombre: $("#cNombre", md).value.trim(), telefono: $("#cTel", md).value.trim() || null,
+      barrio: $("#cBarrio", md).value.trim() || null, direccion: $("#cDir", md).value.trim() || null, notas: $("#cNotas", md).value.trim() || null };
+    if (!d.nombre) return toast("Escribe el nombre", true);
+    const r = id ? ok(await sb.from("clientes").update(d).eq("id", id).select().single(), "Cliente guardado")
+                 : ok(await sb.from("clientes").insert(d).select().single(), "Cliente creado");
+    abrirCliente(r.id); if (S.vista === "clientes") vClientes();
+  };
+  if (!id) return;
+  enlazarServicios($("#hist", md));
+  $("#nuevoS", md).onclick = () => nuevoServicio({ cliente: c });
+  $("#addEq", md).onclick = () => {
+    $("#formEq", md).innerHTML = `<div class="sep"></div><div class="fg">
+      <label class="f">Tipo<select id="qTipo">${optsArr(EQUIPOS)}</select></label>
+      <label class="f">Marca<input id="qMarca"></label><label class="f">Modelo<input id="qModelo"></label><label class="f">Serial<input id="qSerial"></label>
+    </div><div class="row" style="margin-top:10px;justify-content:flex-end"><button class="btn sm" id="qOk">Agregar equipo</button></div>`;
+    $("#qOk", md).onclick = async () => {
+      ok(await sb.from("equipos").insert({ cliente_id: id, tipo: $("#qTipo", md).value, marca: $("#qMarca", md).value.trim() || null,
+        modelo: $("#qModelo", md).value.trim() || null, serial: $("#qSerial", md).value.trim() || null }), "Equipo agregado");
+      abrirCliente(id);
+    };
+  };
+}
+
+// =====================================================================
+// CAJA
+// =====================================================================
+async function vCaja() {
+  const h = hoy();
+  S.caja = S.caja || { desde: h.slice(0, 8) + "01", hasta: h, cuenta: "" };
+  const [saldos, movs] = await Promise.all([
+    sb.from("v_saldos_cuentas").select("*"),
+    (() => { let q = sb.from("v_caja").select("*").gte("fecha", S.caja.desde).lte("fecha", S.caja.hasta)
+      .order("fecha", { ascending: false }).order("created_at", { ascending: false });
+      if (S.caja.cuenta) q = q.eq("cuenta", S.caja.cuenta); return q; })(),
+  ]);
+  const sal = Object.fromEntries((saldos.data || []).map(x => [x.cuenta, Number(x.saldo)]));
+  const total = Object.values(sal).reduce((a, b) => a + b, 0);
+  const m = movs.data || [];
+  const ent = m.filter(x => x.neto > 0).reduce((a, x) => a + Number(x.neto), 0), sal2 = m.filter(x => x.neto < 0).reduce((a, x) => a - Number(x.neto), 0);
+  $("#main").innerHTML = `
+    <div class="row sp"><h2>Caja</h2><button class="btn sm" id="nuevoMov">+ Movimiento</button></div>
+    <div class="grid g4" style="margin-bottom:16px">
+      ${Object.entries(CUENTAS).map(([k, t]) => `<div class="box kpi ${(sal[k] || 0) < 0 ? "neg" : ""}"><small>${t}</small><b>${plata(sal[k] || 0)}</b></div>`).join("")}
+      <div class="box kpi"><small>Total</small><b>${plata(total)}</b></div>
+    </div>
+    <div class="box">
+      <div class="fg" style="margin-bottom:12px">
+        <label class="f">Desde<input type="date" id="fDesde" value="${S.caja.desde}"></label>
+        <label class="f">Hasta<input type="date" id="fHasta" value="${S.caja.hasta}"></label>
+        <label class="f">Cuenta<select id="fCta"><option value="">Todas</option>${opts(CUENTAS, S.caja.cuenta)}</select></label>
+      </div>
+      <div class="row small" style="margin-bottom:8px"><span>Entradas: <b class="pos">${plata(ent)}</b></span><span>Salidas: <b class="neg">${plata(sal2)}</b></span><span>Neto: <b>${plata(ent - sal2)}</b></span></div>
+      ${m.length ? `<div style="overflow-x:auto"><table><tr><th>Fecha</th><th>Concepto</th><th>Cuenta</th><th class="n">Valor</th><th></th></tr>
+        ${m.map(x => `<tr><td class="small">${fecha(x.fecha)}</td><td><b>${esc(CATEGORIAS[x.categoria] || x.categoria)}</b>
+          <div class="small muted">${esc(x.descripcion || "")}${x.socio_id ? " · " + esc((S.socios.find(s => s.id === x.socio_id) || {}).nombre || "") : ""}</div></td>
+          <td class="small">${esc(CUENTAS[x.cuenta] || x.cuenta || "")}</td>
+          <td class="n ${x.neto > 0 ? "pos" : "neg"}">${x.neto > 0 ? "+" : "−"}${plata(Math.abs(x.neto))}</td>
+          <td class="n">${x.servicio_id ? `<button class="btn sm sec" data-serv="${x.servicio_id}">Ver</button>`
+            : x.origen === "movimiento" ? `<button class="btn sm red" data-delmov="${x.id}">×</button>` : ""}</td></tr>`).join("")}</table></div>`
+        : `<div class="empty">No hay movimientos en estas fechas.</div>`}
+    </div>
+    <p class="small muted" style="margin-top:10px">Los pagos de clientes y los repuestos se registran dentro de cada servicio. Los gastos que un socio paga de su bolsillo no salen de la caja: quedan como deuda de la empresa con ese socio.</p>`;
+  const f = () => { S.caja = { desde: $("#fDesde").value, hasta: $("#fHasta").value, cuenta: $("#fCta").value }; vCaja(); };
+  ["#fDesde", "#fHasta", "#fCta"].forEach(k => $(k).onchange = f);
+  $("#nuevoMov").onclick = () => nuevoMovimiento({});
+  enlazarServicios($("#main"));
+  $("#main").querySelectorAll("[data-delmov]").forEach(b => b.onclick = async () => {
+    if (!confirm("¿Borrar este movimiento?")) return;
+    ok(await sb.from("movimientos").delete().eq("id", b.dataset.delmov), "Movimiento borrado"); vCaja();
+  });
+}
+
+function nuevoMovimiento({ categoria = "gasto", socioId = "", valor = 0 }) {
+  const TIPOS = { gasto: "Gasto del negocio", pago_tecnico: "Pago a Héctor (técnico)", aporte_socio: "Un socio mete plata a la caja",
+    devolucion_socio: "Devolverle plata a un socio", retiro_socio: "Retiro de utilidades de un socio", ajuste_mas: "Ajuste (+)", ajuste_menos: "Ajuste (−)" };
+  const md = abrirModal("Nuevo movimiento", `<div class="box grid">
+    <label class="f">¿Qué es?<select id="mTipo">${opts(TIPOS, categoria)}</select></label>
+    <div class="fg">
+      <label class="f">Valor<input id="mValor" inputmode="numeric" value="${valor ? plata(valor) : ""}"></label>
+      <label class="f">Fecha<input type="date" id="mFecha" value="${hoy()}"></label>
+      <label class="f">Cuenta<select id="mCta">${opts(CUENTAS)}</select></label>
+      <label class="f" id="mSocL">Socio<select id="mSoc">${S.socios.map(x => `<option value="${x.id}" ${x.id === socioId ? "selected" : ""}>${esc(x.nombre)}</option>`).join("")}</select></label>
+    </div>
+    <label class="chk" id="mBolsL"><input type="checkbox" id="mBols">Lo pagó un socio de su bolsillo (queda como deuda de la empresa)</label>
+    <label class="f">Descripción<input id="mDesc" placeholder="Ej: Gasolina, herramienta, publicidad…"></label>
+  </div>`, `<button class="btn sec" data-cerrar>Cancelar</button><button class="btn" id="mOk">Guardar</button>`);
+  const tipo = $("#mTipo", md), bols = $("#mBols", md);
+  const act = () => {
+    const t = tipo.value, socio = ["aporte_socio", "devolucion_socio", "retiro_socio"].includes(t) || (t === "gasto" && bols.checked);
+    $("#mSocL", md).hidden = !socio; $("#mBolsL", md).hidden = t !== "gasto";
+    $("#mCta", md).closest("label").hidden = t === "gasto" && bols.checked;
+  };
+  tipo.onchange = act; bols.onchange = act; act();
+  $("#mOk", md).onclick = async () => {
+    const t = tipo.value, v = num($("#mValor", md).value);
+    if (v <= 0) return toast("Escribe el valor", true);
+    const d = { valor: v, fecha: $("#mFecha", md).value || hoy(), descripcion: $("#mDesc", md).value.trim() || null, cuenta: $("#mCta", md).value };
+    if (t === "ajuste_mas") Object.assign(d, { tipo: "ingreso", categoria: "ajuste" });
+    else if (t === "ajuste_menos") Object.assign(d, { tipo: "egreso", categoria: "ajuste" });
+    else Object.assign(d, { tipo: t === "aporte_socio" ? "ingreso" : "egreso", categoria: t });
+    if (["aporte_socio", "devolucion_socio", "retiro_socio"].includes(t)) d.socio_id = $("#mSoc", md).value;
+    if (t === "gasto" && bols.checked) { d.cuenta = "socio"; d.socio_id = $("#mSoc", md).value; }
+    if (t === "pago_tecnico") d.tecnico_id = (S.tecnicos[0] || {}).id;
+    ok(await sb.from("movimientos").insert(d), "Movimiento guardado"); cerrarModal(); refrescar();
+  };
+}
+
+// =====================================================================
+// SOCIOS Y HÉCTOR
+// =====================================================================
+async function vSocios() {
+  const [res, soc, tec] = await Promise.all([sb.from("v_resumen").select("*").single(), sb.from("v_socios").select("*").order("nombre"), sb.from("v_tecnicos").select("*")]);
+  const r = ok(res), utilidad = r.ingresos - r.repuestos - r.gastos - r.tecnico;
+  $("#main").innerHTML = `<h2>Socios y Héctor</h2>
+    <div class="box" style="margin-bottom:14px"><h3>Utilidad acumulada del negocio</h3>
+      <div class="tot">
+        <span>Cobrado a clientes</span><b class="pos">${plata(r.ingresos)}</b>
+        <span>− Repuestos (costo)</span><b class="neg">${plata(r.repuestos)}</b>
+        <span>− Gastos</span><b class="neg">${plata(r.gastos)}</b>
+        <span>− Parte del técnico</span><b class="neg">${plata(r.tecnico)}</b>
+        <span><b>Utilidad para repartir</b></span><b class="big">${plata(utilidad)}</b>
+      </div></div>
+    <h3>Socios</h3>
+    <div class="grid g2" style="margin-bottom:14px">${(soc.data || []).map(s => `<div class="box">
+      <div class="row sp"><b style="font-size:16px;color:var(--navy)">${esc(s.nombre)}</b><span class="badge">${Math.round(s.porcentaje * 10) / 10}%</span></div>
+      <div class="tot" style="margin-top:10px">
+        <span>Le corresponde</span><b>${plata(s.utilidad_asignada)}</b>
+        <span>Ya retiró</span><b>${plata(s.retiros)}</b>
+        <span><b>Disponible para retirar</b></span><b class="big">${plata(s.utilidad_asignada - s.retiros)}</b>
+        <span>La empresa le debe</span><b class="${s.deuda > 0 ? "neg" : ""}">${plata(s.deuda)}</b>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn sm" data-ret="${s.id}" data-v="${Math.max(0, s.utilidad_asignada - s.retiros)}">Registrar retiro</button>
+        ${s.deuda > 0 ? `<button class="btn sm sec" data-dev="${s.id}" data-v="${s.deuda}">Devolverle deuda</button>` : ""}
+      </div></div>`).join("")}</div>
+    <h3>Técnico</h3>
+    <div class="grid g2">${(tec.data || []).map(t => { const saldo = Number(t.ganado) + Number(t.reembolsos) - Number(t.pagado); return `<div class="box">
+      <div class="row sp"><b style="font-size:16px;color:var(--navy)">${esc(t.nombre)}</b><span class="badge">${Number(t.porcentaje)}%</span></div>
+      <div class="tot" style="margin-top:10px">
+        <span>Ha ganado (su % de lo cobrado − repuestos)</span><b>${plata(t.ganado)}</b>
+        <span>Repuestos que pagó de su bolsillo</span><b>${plata(t.reembolsos)}</b>
+        <span>Ya se le pagó</span><b>${plata(t.pagado)}</b>
+        <span><b>Se le debe</b></span><b class="big ${saldo > 0 ? "neg" : ""}">${plata(saldo)}</b>
+      </div>
+      <div class="row" style="margin-top:12px"><button class="btn sm" data-pagtec="${Math.max(0, saldo)}">Registrar pago a ${esc(primerNombre(t.nombre))}</button></div></div>`; }).join("")}</div>
+    <p class="small muted" style="margin-top:12px">Cálculo: el técnico se lleva su porcentaje de lo que pagan los clientes menos el costo de los repuestos. Lo que queda, menos gastos, se reparte entre los socios según su porcentaje. Para liquidar la quincena, registra el retiro de cada socio.</p>`;
+  $("#main").querySelectorAll("[data-ret]").forEach(b => b.onclick = () => nuevoMovimiento({ categoria: "retiro_socio", socioId: b.dataset.ret, valor: num(b.dataset.v) }));
+  $("#main").querySelectorAll("[data-dev]").forEach(b => b.onclick = () => nuevoMovimiento({ categoria: "devolucion_socio", socioId: b.dataset.dev, valor: num(b.dataset.v) }));
+  $("#main").querySelectorAll("[data-pagtec]").forEach(b => b.onclick = () => nuevoMovimiento({ categoria: "pago_tecnico", valor: num(b.dataset.pagtec) }));
+}
+
+// =====================================================================
+// GARANTÍAS
+// =====================================================================
+async function vGarantias() {
+  const h = hoy();
+  const [vig, rec] = await Promise.all([
+    sb.from("v_servicios").select("*").gte("garantia_hasta", h).order("garantia_hasta"),
+    sb.from("v_servicios").select("*").eq("es_garantia", true).order("numero", { ascending: false }).limit(50),
+  ]);
+  const v = vig.data || [], pronto = sumarDias(h, 30);
+  $("#main").innerHTML = `<h2>Garantías vigentes (${v.length})</h2>
+    <div class="list" id="lG" style="margin-bottom:22px">${v.length ? v.map(s => `<div class="item" data-serv="${s.id}">
+      <div><div class="t">#${s.numero} · ${esc(s.cliente_nombre)}</div><div class="s">${esc([s.equipo_tipo, s.equipo_marca].filter(Boolean).join(" · "))} · terminado ${fecha(s.fecha_terminado)}</div></div>
+      <div class="r"><div class="s">Vence</div><b class="${s.garantia_hasta <= pronto ? "neg" : ""}">${fecha(s.garantia_hasta)}</b></div></div>`).join("")
+      : `<div class="empty">No hay garantías vigentes.</div>`}</div>
+    <h2>Reclamos de garantía</h2>
+    <div class="list" id="lR">${(rec.data || []).length ? rec.data.map(filaServicio).join("") : `<div class="empty">No hay reclamos. Para crear uno, abre la orden original y toca “Crear reclamo de garantía”.</div>`}</div>`;
+  enlazarServicios($("#main"));
+}
+
+// =====================================================================
+// RECORDATORIOS DE MANTENIMIENTO
+// =====================================================================
+async function vRecordatorios() {
+  const h = hoy();
+  const [due, prox] = await Promise.all([
+    sb.from("v_servicios").select("*").eq("recordatorio_estado", "pendiente").lte("recordatorio_fecha", h).order("recordatorio_fecha"),
+    sb.from("v_servicios").select("*").eq("recordatorio_estado", "pendiente").gt("recordatorio_fecha", h).lte("recordatorio_fecha", sumarDias(h, 30)).order("recordatorio_fecha"),
+  ]);
+  const msg = s => `Hola ${primerNombre(s.cliente_nombre)}, te saluda Técnicos del Poblado. Hace unos meses le hicimos servicio a tu ${(s.equipo_tipo || "equipo").toLowerCase()}${s.equipo_marca ? " " + s.equipo_marca : ""}. Ya es buen momento para su mantenimiento preventivo y evitar daños costosos. ¿Te agendamos una visita esta semana?`;
+  const fila = (s, accion) => `<div class="item" style="cursor:default">
+    <div><div class="t">${esc(s.cliente_nombre)} · ${esc([s.equipo_tipo, s.equipo_marca].filter(Boolean).join(" "))}</div>
+      <div class="s">Orden #${s.numero} · servicio ${fecha(s.fecha_terminado)} · recordar ${fecha(s.recordatorio_fecha)}</div></div>
+    ${accion ? `<div class="row"><a class="btn sm wa" target="_blank" data-wa="${s.id}" href="${waLink(s.cliente_telefono, msg(s))}">Escribir</a>
+      <button class="btn sm sec" data-hecho="${s.id}">Contactado</button><button class="btn sm red" data-no="${s.id}">No aplica</button></div>` : `<span class="s">${fecha(s.recordatorio_fecha)}</span>`}</div>`;
+  $("#main").innerHTML = `<h2>Para contactar hoy (${(due.data || []).length})</h2>
+    <p class="small muted" style="margin-bottom:10px">Clientes a los que se les hizo servicio hace ${S.cfg.recordatorio_meses || 6} meses. Escríbeles para ofrecer el mantenimiento.</p>
+    <div class="list" id="lD" style="margin-bottom:22px">${(due.data || []).length ? due.data.map(s => fila(s, true)).join("") : `<div class="empty">Nada pendiente por hoy.</div>`}</div>
+    <h2>Próximos 30 días</h2>
+    <div class="list">${(prox.data || []).length ? prox.data.map(s => fila(s, false)).join("") : `<div class="empty">Ninguno.</div>`}</div>`;
+  const marcar = async (id, estado) => { ok(await sb.from("servicios").update({ recordatorio_estado: estado }).eq("id", id), "Listo"); refrescar(); };
+  $("#main").querySelectorAll("[data-wa]").forEach(a => a.addEventListener("click", () => setTimeout(() => marcar(a.dataset.wa, "contactado"), 400)));
+  $("#main").querySelectorAll("[data-hecho]").forEach(b => b.onclick = () => marcar(b.dataset.hecho, "contactado"));
+  $("#main").querySelectorAll("[data-no]").forEach(b => b.onclick = () => marcar(b.dataset.no, "no_aplica"));
+}
+
+// =====================================================================
+if (!C.SUPABASE_URL || C.SUPABASE_URL.indexOf("http") !== 0) {
+  document.body.innerHTML = '<div class="load">Falta configurar Supabase en config.js</div>';
+} else arrancar();
+</script>
+</body>
+</html>
