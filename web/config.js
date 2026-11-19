@@ -1,8 +1,8 @@
 // Configuración compartida por la página y el panel.
-// La "anon key" de Supabase es pública por diseño: la seguridad la dan las reglas (RLS) de la base de datos.
+// La clave "publishable" de Supabase es pública por diseño: la seguridad la dan las reglas (RLS) de la base de datos.
 window.TDP = {
-  SUPABASE_URL: "PEGAR_AQUI_URL_DE_SUPABASE",        // ej: https://abcdxyz.supabase.co
-  SUPABASE_ANON_KEY: "PEGAR_AQUI_ANON_KEY",          // Project Settings → API → anon public
+  SUPABASE_URL: "https://hlljfqdfzcnrllunucki.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_WqVDZXDv8JnPNT7Mtzo0Ww_bfu9qJm-",  // clave pública (publishable)
   RENDER_URL: "https://tecnicos-190r.onrender.com",  // servidor de facturas y WhatsApp
   WHATSAPP: "573108421131",
   TELEFONO: "+573108421131",
