@@ -1,52 +1,44 @@
-# Técnicos del Poblado — página, panel y servidor
+# Técnicos del Poblado — página y panel
+
+Todo es una página estática: GitHub guarda el código, Hostinger la publica y Supabase guarda los datos.
+No hay servidor aparte.
 
 ```
-web/                 Página pública + panel (se publica en Vercel)
-  index.html         Página tecnicosdelpoblado.com
-  admin/index.html   Panel de administración (tecnicosdelpoblado.com/admin)
-  config.js          URL y anon key de Supabase, URL de Render
-  img/               Logo, íconos. Aquí van hero.jpg, hector.jpg y fotos de trabajos
-supabase/schema.sql  Base de datos completa (tablas, cálculos y seguridad)
-app.py               Servidor en Render: imágenes de orden/factura y envío por WhatsApp
-render_*.py, *.png, fonts/   Plantillas de la orden y la factura
+index.html           Página pública (tecnicosdelpoblado.com)
+admin/index.html     Panel de administración (tecnicosdelpoblado.com/admin)
+config.js            Dirección y clave pública de Supabase, WhatsApp
+img/                 Logo, íconos y plantillas de la orden y la factura
+fonts/               Letra que usan la orden y la factura
+supabase/schema.sql  Base de datos (ya está cargada en Supabase)
 ```
 
-## 1. Supabase (base de datos y login)
-1. Crear proyecto **Técnicos del Poblado** en supabase.com.
-2. **SQL Editor → New query** → pegar todo `supabase/schema.sql` → **Run**.
-3. Agregar a los administradores (mismo SQL Editor):
-   ```sql
-   insert into admins (email, nombre) values
-     ('correo-de-juan@gmail.com', 'Juan'),
-     ('correo-de-camilo@gmail.com', 'Camilo'),
-     ('correo-de-mariana@gmail.com', 'Mariana');
-   ```
-4. **Authentication → Sign In / Providers**: desactivar "Allow new users to sign up".
-5. **Authentication → URL Configuration**: Site URL = `https://tecnicosdelpoblado.com/admin/`.
-6. **Authentication → Users → Invite user** con cada correo. Cada uno abre el correo y crea su contraseña.
-7. **Project Settings → API**: copiar *Project URL* y *anon public key* en `web/config.js`.
+## Publicar en Hostinger
+hPanel → sitio de tecnicosdelpoblado.com → **Avanzado → GIT**:
+- Repositorio: `https://github.com/tecnicosdelpoblado-coder/Tecnicos.git`
+- Rama: `main` · Directorio: vacío (public_html)
+- **Crear** → **Desplegar**. Activar **Auto deployment** para que cada cambio en GitHub se publique solo.
 
-## 2. Render (servidor de facturas)
-En el servicio `tecnicos` → **Environment**:
-- `SUPABASE_URL` y `SUPABASE_ANON_KEY` (los mismos de config.js)
-- `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_ID` (ya estaban)
-- Borrar `AIRTABLE_TOKEN` (ya no se usa)
+El dominio debe apuntar a Hostinger (hoy apunta a Vercel).
 
-## 3. Vercel (página)
-En el proyecto de tecnicosdelpoblado.com: conectar este repositorio con **Root Directory = `web`**.
+## Administradores del panel
+En Supabase → SQL Editor:
+```sql
+insert into admins (email, nombre) values ('correo@gmail.com', 'Nombre');
+```
+Luego Authentication → Users → **Invite user** con ese correo. Cada persona crea su contraseña desde el correo.
 
-**Orden para no dañar nada:** primero Supabase → luego Vercel (página nueva) → por último Render.
-Si se actualiza Render antes que la página, el formulario de la página vieja deja de guardar solicitudes.
+## Orden y factura
+Se dibujan en el mismo navegador con las plantillas de `img/plantillas/`. Desde el celular, el botón
+**Enviar por WhatsApp** abre el menú de compartir; desde el computador se descarga y se adjunta en el chat.
 
 ## Fotos
-- `web/img/hero.jpg`: foto de fondo del inicio (la de la página actual).
-- `web/img/hector.jpg`: foto de Héctor (vertical, 4:5).
-- Antes/después: subirlas a `web/img/trabajos/` y listarlas en `GALERIA` dentro de `config.js`.
+- `img/hero.jpg`: fondo del inicio · `img/hector.jpg`: foto de Héctor (vertical)
+- Antes/después: subir a `img/trabajos/` y listarlas en `GALERIA` dentro de `config.js`.
 
 ## Cómo se calcula el dinero
-- **Total de un servicio**: si el cliente autoriza → mano de obra + repuestos cobrados − descuento (la visita queda descontada). Si no autoriza → solo la visita.
-- **Héctor**: 50% de lo que paga el cliente menos el costo de los repuestos. Si él compra un repuesto con su plata, se le devuelve aparte.
-- **Socios**: lo cobrado − repuestos − gastos − parte de Héctor, en tercios (Camilo, Juan, Mariana). Cada retiro se registra en Caja.
-- **Deudas a socios**: gastos o repuestos que un socio pagó de su bolsillo, más lo que metió a la caja, menos lo que ya se le devolvió.
-- **Garantía**: 6 meses desde que el servicio queda *Terminado* (solo si hubo reparación).
-- **Recordatorio**: 6 meses después de terminar, el cliente aparece en *Recordatorios* para ofrecerle mantenimiento.
+- **Total del servicio**: si autoriza → mano de obra + repuestos − descuento (la visita queda descontada). Si no → la visita.
+- **Héctor**: 50% de lo que paga el cliente menos el costo de los repuestos; los repuestos que él compre se le devuelven aparte.
+- **Socios**: cobrado − repuestos − gastos − parte de Héctor, en tercios (Camilo, Juan, Mariana). Cada retiro se registra en Caja.
+- **Deudas a socios**: lo que un socio pagó de su bolsillo o metió a la caja, menos lo que ya se le devolvió.
+- **Garantía**: 6 meses desde que el servicio queda *Terminado* (si hubo reparación).
+- **Recordatorio**: a los 6 meses el cliente aparece en *Recordatorios* para ofrecerle mantenimiento.

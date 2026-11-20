@@ -248,7 +248,6 @@ async function arrancar() {
   }
   $("#pantallaLogin").hidden = true; $("#app").hidden = false;
   $("#quien").textContent = session.user.email;
-  if (C.RENDER_URL) fetch(C.RENDER_URL + "/").catch(() => {});   // despierta el servidor de facturas
   const [cfg, soc, tec] = await Promise.all([
     sb.from("config").select("*").eq("id", 1).single(),
     sb.from("socios").select("*").order("nombre"),
@@ -531,8 +530,7 @@ async function abrirServicio(id) {
     <div class="box"><h3>Documentos</h3>
       <div class="row">
         <button class="btn sec" id="verOrden">Orden de servicio</button>
-        <button class="btn sec" id="verFactura">Factura</button>
-        <button class="btn wa" id="enviarFactura">Enviar factura por WhatsApp</button>
+        <button class="btn" id="verFactura">Factura</button>
       </div>
     </div>`,
     `${!pagos.length && !repuestos.length ? `<button class="btn red" id="borrar" style="margin-right:auto">Eliminar</button>` : ""}
@@ -659,44 +657,112 @@ async function abrirServicio(id) {
       vence_garantia: v.garantia_hasta ? fecha(v.garantia_hasta) : "",
     };
   };
-  $("#verOrden", md).onclick = () => verImagen("orden", datosOrden(), `orden-${s.numero}.png`, cli);
-  $("#verFactura", md).onclick = async () => verImagen("factura", await datosFactura(), `factura-${s.numero}.png`, cli);
-  $("#enviarFactura", md).onclick = async e => {
-    if (!cli.telefono) return toast("El cliente no tiene WhatsApp", true);
-    if (!confirm(`¿Enviar la factura de la orden #${s.numero} al WhatsApp ${cli.telefono}?`)) return;
-    e.target.disabled = true; e.target.textContent = "Enviando…";
-    try {
-      const r = await llamarRender("/enviar-factura", { to: cli.telefono, tipo: "factura", datos: await datosFactura(), plantilla: true });
-      const j = await r.json();
-      if (!r.ok || !j.ok) throw new Error(j.error || "No se pudo enviar");
-      toast("Factura enviada por WhatsApp ✓");
-    } catch (err) { toast("No se envió: " + err.message, true); }
-    e.target.disabled = false; e.target.textContent = "Enviar factura por WhatsApp";
-  };
+  $("#verOrden", md).onclick = () => verImagen("orden", datosOrden(), `orden-${s.numero}.jpg`, cli,
+    `Hola ${primerNombre(cli.nombre)}, te confirmamos tu visita de Técnicos del Poblado. Te envío la orden de servicio.`);
+  $("#verFactura", md).onclick = async () => verImagen("factura", await datosFactura(), `factura-${s.numero}.jpg`, cli,
+    `Hola ${primerNombre(cli.nombre)}, gracias por confiar en Técnicos del Poblado. Te envío la factura de tu servicio (orden #${s.numero}).`);
 }
 
-async function llamarRender(ruta, cuerpo) {
-  const { data: { session } } = await sb.auth.getSession();
-  return fetch(C.RENDER_URL + ruta, { method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: "Bearer " + session.access_token },
-    body: JSON.stringify(cuerpo) });
+// ---------- Orden y factura como imagen (se dibujan aquí mismo, sin servidor) ----------
+let _fuentes;
+function cargarFuentes() {
+  if (!_fuentes) {
+    const b = new FontFace("TDPBold", "url(../fonts/LiberationSans-Bold.ttf)");
+    const r = new FontFace("TDPReg", "url(../fonts/LiberationSans-Regular.ttf)");
+    _fuentes = Promise.all([b.load(), r.load()]).then(fs => fs.forEach(f => document.fonts.add(f)));
+  }
+  return _fuentes;
+}
+const cargarImg = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error("no cargó la plantilla")); i.src = src; });
+const fuente = (size, bold) => `${size}px ${bold ? "TDPBold" : "TDPReg"}`;
+function texto(c, t, x, y, max, inicio, bold, color, derecha = false, minimo = 14) {
+  t = String(t ?? "").replace(/\n/g, " ").trim();
+  let sz = inicio; c.font = fuente(sz, bold);
+  while (sz > minimo && c.measureText(t).width > max) { sz--; c.font = fuente(sz, bold); }
+  c.fillStyle = color; c.textAlign = derecha ? "right" : "left"; c.textBaseline = "alphabetic";
+  c.fillText(t, x, y);
+}
+function partir(c, t, max, size, bold, maxLineas) {
+  c.font = fuente(size, bold); const out = [];
+  for (const par of String(t ?? "").split("\n")) {
+    let l = "";
+    for (const w of par.split(/\s+/).filter(Boolean)) {
+      const p = (l + " " + w).trim();
+      if (c.measureText(p).width <= max) l = p; else { if (l) out.push(l); l = w; }
+    }
+    if (l) out.push(l);
+  }
+  if (out.length > maxLineas) { out.length = maxLineas; out[maxLineas - 1] += "…"; }
+  return out.length ? out : [""];
+}
+const dinero = v => { const t = String(v ?? "").trim(); if (!t) return ""; const n = Number(t.replace(/[$.,\s]/g, "")); return isNaN(n) ? t : plata(n); };
+
+async function dibujar(tipo, d) {
+  await cargarFuentes();
+  const NEGRO = "rgb(12,12,12)";
+  if (tipo === "factura") {
+    const bg = await cargarImg("../img/plantillas/factura.jpg");
+    const cv = document.createElement("canvas"); cv.width = bg.naturalWidth; cv.height = bg.naturalHeight;
+    const c = cv.getContext("2d"); c.drawImage(bg, 0, 0);
+    const AZUL = "rgb(11,34,90)";
+    texto(c, d.fecha, 1035, 140, 150, 24, false, NEGRO, true);
+    texto(c, d.cliente, 150, 378, 780, 27, true, NEGRO);
+    texto(c, d.telefono, 168, 421, 760, 27, true, NEGRO);
+    let y = 463; for (const l of partir(c, d.direccion, 870, 26, false, 2)) { texto(c, l, 175, y, 900, 26, false, NEGRO); y += 34; }
+    texto(c, d.equipo, 145, 582, 800, 27, true, NEGRO);
+    texto(c, d.tecnico, 155, 625, 800, 27, true, NEGRO);
+    partir(c, d.servicio, 940, 25, false, 4).forEach((l, i) => texto(c, l, 54, 705 + i * 34, 990, 25, false, NEGRO));
+    const g = String(d.garantia || "").trim(), v = String(d.vence_garantia || "").trim();
+    if (g || v) {
+      texto(c, "GARANTÍA:", 54, 850, 165, 25, true, AZUL);
+      texto(c, g + (v ? (g ? " — " : "") + "Vigente hasta: " + v : ""), 205, 850, 800, 25, false, NEGRO);
+    }
+    let cy = 1012; for (const l of partir(c, d.concepto, 640, 25, false, 5)) { texto(c, l, 68, cy, 640, 25, false, NEGRO); cy += 32; }
+    texto(c, dinero(d.valor || d.total), 1000, 1012, 220, 27, true, NEGRO, true);
+    texto(c, dinero(d.total), 1000, 1218, 230, 32, true, AZUL, true);
+    return cv;
+  }
+  // Orden de servicio
+  const bg = await cargarImg("../img/plantillas/orden.jpg");
+  const cv = document.createElement("canvas"); cv.width = 1023; cv.height = 1537;
+  const c = cv.getContext("2d"); c.drawImage(bg, 0, 0, 1023, 1537);
+  c.fillStyle = "#fff";
+  for (const [x1, y1, x2, y2] of [[225,515,950,570],[225,645,950,755],[225,835,950,880],[225,968,950,1020],[225,1105,950,1160],[225,1235,950,1365]])
+    c.fillRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+  const AZULO = "rgb(11,67,168)";
+  texto(c, d.cliente, 237, 555, 700, 40, true, NEGRO, false, 18);
+  const dir = String(d.direccion || "").split("\n").filter(Boolean).slice(0, 3);
+  dir.forEach((l, i) => texto(c, l, 237, 690 + i * 49, 700, 40, true, (i === dir.length - 1 && dir.length > 1) ? AZULO : NEGRO, false, 18));
+  texto(c, d.telefono, 237, 875, 700, 40, true, NEGRO, false, 18);
+  texto(c, d.fecha, 237, 1008, 700, 40, true, NEGRO, false, 18);
+  texto(c, d.hora, 237, 1145, 700, 38, true, NEGRO, false, 18);
+  String(d.servicio || "").split("\n").filter(Boolean).slice(0, 4)
+    .forEach((l, i) => texto(c, l, 237, 1275 + i * 42, 700, i === 0 ? 40 : 34, i === 0, NEGRO, false, 18));
+  return cv;
 }
 
-async function verImagen(tipo, datos, nombreArchivo, cli) {
+async function verImagen(tipo, datos, nombreArchivo, cli, mensaje) {
   const md = abrirModal(tipo === "orden" ? "Orden de servicio" : "Factura",
-    `<div class="load" id="imgLoad">Generando imagen… (si el servidor estaba dormido puede tardar ~30 s)</div><img class="imgv" id="imgV" hidden alt="">`,
-    `<button class="btn sec" data-cerrar>Volver</button><a class="btn sec" id="descargar" hidden>Descargar</a><button class="btn wa" id="compartir" hidden>Compartir</button>`, "#modal2");
+    `<div class="load" id="imgLoad">Generando imagen…</div><img class="imgv" id="imgV" hidden alt="">
+     <p class="small muted" id="ayuda" hidden></p>`,
+    `<button class="btn sec" data-cerrar>Volver</button><a class="btn sec" id="descargar" hidden>Descargar</a>
+     <a class="btn sec" id="chat" target="_blank" hidden>Abrir chat</a><button class="btn wa" id="compartir" hidden>Enviar por WhatsApp</button>`, "#modal2");
   try {
-    const r = await llamarRender("/" + tipo, datos);
-    if (!r.ok) throw new Error(r.status === 401 ? "Sesión vencida, vuelve a ingresar" : "Error " + r.status);
-    const blob = await r.blob(), url = URL.createObjectURL(blob);
+    const cv = await dibujar(tipo, datos);
+    const blob = await new Promise(r => cv.toBlob(r, "image/jpeg", 0.92));
+    const url = URL.createObjectURL(blob);
     $("#imgV", md).src = url; $("#imgV", md).hidden = false; $("#imgLoad", md).hidden = true;
     const a = $("#descargar", md); a.href = url; a.download = nombreArchivo; a.hidden = false;
-    const file = new File([blob], nombreArchivo, { type: "image/png" });
+    if (cli?.telefono) { const ch = $("#chat", md); ch.href = waLink(cli.telefono, mensaje); ch.hidden = false; }
+    const file = new File([blob], nombreArchivo, { type: "image/jpeg" });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       const b = $("#compartir", md); b.hidden = false;
-      b.onclick = () => navigator.share({ files: [file], title: nombreArchivo }).catch(() => {});
+      b.onclick = () => navigator.share({ files: [file], text: mensaje }).catch(() => {});
+      $("#ayuda", md).textContent = "“Enviar por WhatsApp” abre el menú de compartir: elige WhatsApp y luego el chat del cliente.";
+    } else {
+      $("#ayuda", md).textContent = "Desde el computador: toca Descargar, luego “Abrir chat” y adjunta la imagen en WhatsApp.";
     }
+    $("#ayuda", md).hidden = false;
   } catch (e) { $("#imgLoad", md).textContent = "No se pudo generar: " + e.message; }
 }
 
